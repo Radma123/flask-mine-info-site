@@ -1,0 +1,1 @@
+# flask-mine-info-site
