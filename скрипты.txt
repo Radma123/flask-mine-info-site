@@ -1,0 +1,31 @@
+# запуск
+flask run
+
+#при создании
+flask db init
+
+#при изменении
+flask db migrate
+flask db upgrade
+
+#удаление бд
+DROP database mydb;
+
+#Вывод файлов, где содержится "author" (раб.дир. '.')
+grep -rl "author" .
+
+#докер сборка
+docker compose build
+
+#докер запуск контейнера
+docker compose up
+docker compose up -d
+
+#докер остановка контейнера
+docker compose down
+
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -qa)
+
+#удаление репы из vscode
+rm -rf .git
