@@ -10,6 +10,7 @@
       background: linear-gradient(45deg, #da55d8cc, #d293bacc, #eb78bbcc, #e375e1cc);
       animation: gradientAnimation 20s infinite;
       background-size: 600% 600%;
+      background-attachment: fixed;
   }
 
   @keyframes gradientAnimation {
@@ -30,17 +31,17 @@
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 40px;
+    padding: 5px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f5c0f4cc;
+    background: hsla(301, 73%, 86%, 0.6);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0px 0px 40px 40px;
     z-index: 1000;
     overflow: hidden;
-  }
+  } 
 
   header::before {
       content: '';
@@ -60,19 +61,32 @@
     transform: translate(calc(var(--x) * 1px), calc(var(--y) * 1px)) scale(2);
   }
 
-  header h1 {
+  header a.index-link {
     color: #000000cc;
+    transition: all .2s ease-in-out;
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    /* font-size: 32px; */
+    font-weight: bold;
+  }
+
+  header a:hover.index-link{
+    transform: scale(1.02);
+    box-shadow: 0px 2px 10px 4px #6756b0cc;
+    
   }
 
   header nav {
     display: flex;
     gap: 20px;
+    /* font-size: 18px; */
   }
 
   header a {
     text-decoration: none;
     color: #000000cc;
-    font-size: 1.1rem;
+    /* font-size: 1.1rem; */
     padding: 10px 20px;
     border-radius: 25px;
     transition: all 0.3s ease;
@@ -85,9 +99,9 @@
 
   .login-btn {
     padding: 10px 25px;
-    font-size: 1.1rem;
-    color: #003973;
-    background: linear-gradient(135deg, #FFD700, #FF4500);
+    /* font-size: 1.1rem; */
+    color: #000000cc;
+    background: linear-gradient(135deg, #c0b8bd, #bd63e6);
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -105,12 +119,14 @@
     text-align: center;
   }
 
-.h1{
+.h1 {
   font-family: Inter;
-  font-size: 600;
+  font-weight: 600;
+  font-size: 32px;
 }
 
-.h2{
+.h2 {
   font-family: Inter;
-  font-size: 400;
+  font-weight: 400;
+  font-size: 18px;
 }
