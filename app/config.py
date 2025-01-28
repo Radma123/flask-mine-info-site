@@ -8,6 +8,7 @@ class Config(object):
 
     USER = os.environ.get('POSTGRES_USER')
     PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+    
     # ДОБАВИТЬ ПОСЛЕ РАЗРАБОТКИ .ENV
     HOST = '127.0.0.1'
     PORT = os.environ.get('POSTGRES_PORT')
