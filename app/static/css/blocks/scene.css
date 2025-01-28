@@ -1,0 +1,101 @@
+.scene {
+    margin-top: 300px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    width: 400px;
+    height: 400px;
+}
+
+
+/* Фиксированный текст */
+.fixed-text {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%; /* Подняли текст выше */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #fff;
+    text-shadow: 0 0 10px #fff, 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff;
+    z-index: 10;
+}
+
+/* Кнопка */
+.btn {
+    padding: 10px 20px;
+    color: white;
+    background: #0ff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #f0f;
+    box-shadow: 0 0 5px #f0f, 0 0 10px #f0f;
+}
+
+
+.cube {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    animation: slightRotate 6s infinite ease-in-out; /* Плавное покачивание */
+}
+
+.face {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: transparent;
+    border: 2px solid; /* Неоновые грани */
+    border-image-source: linear-gradient(45deg, #0ff, #f0f, #0f0);
+    border-image-slice: 1;
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.5); /* Внутренний неоновый эффект */
+}
+
+/* Расположение граней */
+.face.front {
+    transform: rotateY(0deg) translateZ(200px);
+}
+.face.back {
+    transform: rotateY(180deg) translateZ(200px);
+}
+.face.left {
+    transform: rotateY(-90deg) translateZ(200px);
+}
+.face.right {
+    transform: rotateY(90deg) translateZ(200px);
+}
+.face.top {
+    transform: rotateX(90deg) translateZ(200px);
+}
+.face.bottom {
+    transform: rotateX(-90deg) translateZ(200px);
+}
+
+/* Анимация плавного покачивания */
+@keyframes slightRotate {
+    0% {
+        transform: rotateX(-5deg) rotateY(-5deg);
+    }
+    50% {
+        transform: rotateX(0deg) rotateY(5deg);
+    }
+    100% {
+        transform: rotateX(-5deg) rotateY(-5deg);
+    }
+}

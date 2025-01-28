@@ -6,6 +6,7 @@
   }
 
   body {
+      height: 100hv;
       font-family: Inter;
       background: linear-gradient(45deg, #da55d8cc, #d293bacc, #eb78bbcc, #e375e1cc);
       animation: gradientAnimation 20s infinite;
@@ -115,18 +116,21 @@
   }
 
   .content {
-    padding: 120px 40px;
-    text-align: center;
+    padding: 90px 90px;
+    text-align:justify;
+  }
+  .content-name {
+    text-align:center;
   }
 
-.h1 {
+.h1, h1 {
   font-family: Inter;
   font-weight: 600;
   font-size: 32px;
 }
 
-.h2 {
+.h2, h2 {
   font-family: Inter;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 20px;
 }
