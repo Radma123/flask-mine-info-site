@@ -1,14 +1,16 @@
 from flask import Flask
-from .bundles import bundles, register_bundles
 from .extensions import db,migrate, bcrypt, assets
 from .config import Config
 from .routes.index import index
+from .routes.gpt import gpt
+from flask_assets import Bundle
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
     app.register_blueprint(index)
+    app.register_blueprint(gpt)
 
     #INIT APP
     db.init_app(app)
@@ -23,8 +25,12 @@ def create_app():
     # login_manager.login_message_category = 'info'
     
     #ASSETS
-    register_bundles(assets, bundles)
+    # js_bundle = Bundle('css/*.css', filters='cssmin', output='gen/css/style.min.css')
+    # css_bundle = Bundle('js/*.js', filters='jsmin', output='gen/js/app.min.js')
+    # assets.register('css_all', css_bundle)
+    # assets.register('js_all', js_bundle)
 
+    
     with app.app_context():
         db.create_all()
 

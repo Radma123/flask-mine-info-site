@@ -1,7 +1,7 @@
 {% extends "main/base.html" %}
 
 {% block style %}
-{% assets 'main_index_css' %}<link rel='stylesheet', href='{{ ASSET_URL }}'>{% endassets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/blocks/scene.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -30,5 +30,4 @@ Info
 {% endblock %}
 
 {% block script %}
-<!-- {% assets 'main_index_js' %}<script src='{{ ASSET_URL }}'></script>{% endassets %} -->
 {% endblock %}

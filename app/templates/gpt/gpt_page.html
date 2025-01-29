@@ -1,0 +1,49 @@
+{% extends "main/base.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/blocks/gpt.css') }}">
+{% endblock %}
+
+{% block title %}
+GPT
+{% endblock %}
+
+{% block content %}
+<div class = 'chat-block'>
+    <div class="column">
+        <div class="scrollable-list">
+            <ul>
+                <li>Элемент 1</li>
+                <li>Элемент 2</li>
+                <li>Элемент 3</li>
+                <!-- Добавьте столько элементов, сколько нужно -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="input-container">
+            <ul>
+                <li>Элемент A</li>
+                <li>Элемент B</li>
+                <li>Элемент C</li>
+                <!-- Можно добавить другие элементы -->
+            </ul>
+            <input type="text" id="textInput" placeholder="Введите текст...">
+            <button onclick="sendInput()">Отправить</button>
+        </div>
+    </div>
+
+    <div class="column">
+        <select>
+            {% for gpt in gpts %}
+            <option>{{ gpt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- {% assets 'main_index_js' %}<script src='{{ ASSET_URL }}'></script>{% endassets %} -->
+{% endblock %}
