@@ -10,34 +10,68 @@ GPT
 
 {% block content %}
 <div class = 'chat-block'>
-    <div class="column">
-        <div class="scrollable-list">
-            <ul>
-                <li>Элемент 1</li>
-                <li>Элемент 2</li>
-                <li>Элемент 3</li>
-                <!-- Добавьте столько элементов, сколько нужно -->
-            </ul>
+    <div class="scrollable-chat-container">
+        <div class="new-chat-button">New Chat</div>
+        <ul class="conversations-to-choice">
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <li>Элемент 1</li>
+            <li>Элемент 2</li>
+            <li>Элемент 3</li>
+            <!-- Добавьте столько элементов, сколько нужно -->
+        </ul>
+    </div>
+
+    <div class="input-chat-container">
+        <div class="chat-place">
+            a
+        </div>
+        <div class="chat-controls">
+            a
         </div>
     </div>
 
-    <div class="column">
-        <div class="input-container">
-            <ul>
-                <li>Элемент A</li>
-                <li>Элемент B</li>
-                <li>Элемент C</li>
-                <!-- Можно добавить другие элементы -->
-            </ul>
-            <input type="text" id="textInput" placeholder="Введите текст...">
-            <button onclick="sendInput()">Отправить</button>
-        </div>
-    </div>
-
-    <div class="column">
-        <select>
+    <div class="select-bar">
+        <select class="form-select">
             {% for gpt in gpts %}
-            <option>{{ gpt }}</option>
+            <option value="{{ gpt }}">{{ gpt }}</option>
             {% endfor %}
         </select>
     </div>

@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <!-- место для бустрапа -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/libs/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
         {% block style %}{% endblock %}
@@ -17,7 +17,7 @@
         </main>
         <footer>{% include 'main/_footer.html' %}</footer>
 
-        <!-- место для скриптов -->
+        <script src="{{ url_for('static', filename='js/libs/bootstrap.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/base.js') }}"></script>
         {% block script %}{% endblock %}
     </body>

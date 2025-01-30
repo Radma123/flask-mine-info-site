@@ -9,7 +9,47 @@
     border-radius: 40px 40px 40px 40px; 
 }
 
-.column {
-    width: 30%;
+.scrollable-chat-container{
+    flex-direction: column;
+    gap: 10px;
     padding: 10px;
+    padding-top: 20px;
+    width: 25%;
+    height: 100%;
+    overflow-y: hidden;
+    padding-bottom: 30px;
+}
+
+.new-chat-button{
+    overflow-y: hidden;
+}
+
+.conversations-to-choice{
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.input-chat-container{
+    width: 63%;
+    flex-direction: column;
+    overflow: hidden;
+
+}
+
+.select-bar{
+    width: 12%;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 40px 40px 40px 40px;
+}
+
+.form-select{
+    border-radius: 40px 40px 40px 40px;
+}
+
+
+.chat-place{
+    overflow-y: scroll;
+    height: 85%;
 }

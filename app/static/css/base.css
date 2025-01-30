@@ -6,7 +6,7 @@
 }
 
 body {
-    height: 100hv;
+    height: 100vh;
     font-family: Inter;
     background: linear-gradient(45deg, #da55d8cc, #d293bacc, #eb78bbcc, #e375e1cc);
     animation: gradientAnimation 20s infinite;
@@ -41,10 +41,18 @@ text-align:center;
   font-family: Inter;
   font-weight: 600;
   font-size: 32px;
+  margin-bottom: unset;
 }
 
 .h2, h2 {
+  margin-bottom: unset;
   font-family: Inter;
   font-weight: 400;
   font-size: 20px;
+}
+
+/* ползунок */
+* {
+  scrollbar-width:thin;
+  scrollbar-color: #e29cf0 #241f27;
 }
