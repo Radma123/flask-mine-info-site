@@ -7,5 +7,5 @@ gpt = Blueprint('gpt', __name__)
 @gpt.route('/gpt', methods = ['POST', 'GET'])
 def gpt_page():
 
-    gpts = get_all_gpts()
-    return render_template('gpt/gpt_page.html', gpts = gpts)
+    # gpts = get_all_gpts()
+    return render_template('gpt/gpt_page.html')

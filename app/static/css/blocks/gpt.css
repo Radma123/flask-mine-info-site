@@ -7,6 +7,7 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 40px 40px 40px 40px; 
+    flex-direction: row;
 }
 
 .scrollable-chat-container{
@@ -64,7 +65,8 @@
     width: 63%;
     flex-direction: column;
     overflow: hidden;
-
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 
 .select-bar{
@@ -93,4 +95,39 @@
     background: #d7b1e4;
     border-radius: 40px 40px 40px 40px;
     border: 1px solid rgba(255, 255, 255, 0.2);;
+    
+}
+
+.text-place{
+    display: flex;
+    flex-direction: row;
+    height: 15%;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-place-img{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    aspect-ratio: 1/1;
+}
+
+.type-place{
+    height: 100%;
+    border-radius: 25px 25px 25px 25px;
+}
+
+.text-place-send{
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    aspect-ratio: 1/1;
+}
+
+i.bi{ 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
