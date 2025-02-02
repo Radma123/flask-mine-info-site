@@ -5,3 +5,4 @@ migrations/
 .webassets-cache
 gen/
 .DS_Store
+har_and_cookies

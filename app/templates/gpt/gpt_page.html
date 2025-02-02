@@ -80,19 +80,22 @@ GPT
 
     <div class="input-chat-container">
         <div class="chat-place">
-            a
         </div>
         <div class="text-place">
             <button type="button" class="btn btn-light text-place-img"><i class="bi bi-image"></i></button>
             <textarea class="form-control type-place" placeholder="Text question here" id="floatingTextarea"></textarea>
-            <button type="button" class="btn btn-light text-place-send"><i class="h1 bi bi-send"></i></button>
+            <button type="button" class="btn btn-light text-place-send" id="sendButton">
+                <i class="h1 bi bi-send"></i>
+            </button>
         </div>
     </div>
 
     <div class="select-bar">
-        <select class="form-select">
+        <select id="gpt_value" class="form-select">
             {% for gpt in gpts %}
-            <option value="{{ gpt }}">{{ gpt }}</option>
+                <option value="{{ gpt }}" {% if gpt == 'gpt-4o-mini' %}selected{% endif %}>
+                    {{ gpt }}
+                </option>
             {% endfor %}
         </select>
     </div>
@@ -100,5 +103,5 @@ GPT
 {% endblock %}
 
 {% block script %}
-<!-- {% assets 'main_index_js' %}<script src='{{ ASSET_URL }}'></script>{% endassets %} -->
+<script src="{{ url_for('static', filename='js/gpt_logic.js') }}"></script>
 {% endblock %}

@@ -28,7 +28,8 @@ body {
 
 .content {
 height: 100vh;
-padding: 90px 90px;
+padding: 90px;
+padding-bottom: 60px;
 text-align:justify;
 box-sizing: border-box;
 }

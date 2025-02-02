@@ -23,12 +23,12 @@ def create_app():
     # login_manager.login_view = 'user.login'
     # login_manager.login_message = 'Вы не можете перейти на эту страницу без авторизации'
     # login_manager.login_message_category = 'info'
-    
-    #ASSETS
-    # js_bundle = Bundle('css/*.css', filters='cssmin', output='gen/css/style.min.css')
-    # css_bundle = Bundle('js/*.js', filters='jsmin', output='gen/js/app.min.js')
-    # assets.register('css_all', css_bundle)
-    # assets.register('js_all', js_bundle)
+
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return "Страница не найдена", 404
+
 
     
     with app.app_context():
