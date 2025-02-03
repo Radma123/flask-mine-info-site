@@ -83,6 +83,8 @@
 
 
 .chat-place{
+    display: flex;
+    flex-direction: column;
     overflow-y: scroll;
     height: 85%;
     background: #d7b1e4;
@@ -130,4 +132,25 @@ i.bi{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 40px;
+    margin: 5px 0;
+    max-width: 70%;
+    overflow-wrap: break-word;
+    text-align: left;
+}
+
+.user-message {
+    background: linear-gradient(150deg, #dcf8c6, #f5d2ef);
+    align-self: flex-end;
+    white-space: pre-wrap; 
+}
+
+.bot-message {
+    background: #fff;
+    border: 1px solid #ddd;
+    white-space: pre-wrap; 
 }
