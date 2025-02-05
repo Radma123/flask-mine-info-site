@@ -1,3 +1,8 @@
+document.getElementById('new-chat-button').addEventListener('click', async function(){
+    document.getElementById("chat-place").replaceChildren();
+})
+
+
 document.addEventListener("DOMContentLoaded", function() {
     let select = document.getElementById("gpt_value");
 
