@@ -63,3 +63,25 @@ text-align:center;
   scrollbar-width:thin;
   scrollbar-color: #e29cf0 #241f27;
 }
+
+.flash-container {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flash-message {
+  display: flex;
+  flex-direction: row;
+  border-radius: 25px; /* Делаем углы скруглёнными */
+  padding: 10px 20px;
+  min-width: 200px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0.95;
+}

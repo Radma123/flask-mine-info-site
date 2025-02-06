@@ -8,6 +8,6 @@ from g4f.client import Client
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
-# login_manager = LoginManager()
+login_manager = LoginManager()
 assets = Environment()
 client = Client()

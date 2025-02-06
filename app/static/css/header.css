@@ -89,3 +89,27 @@ header a:hover {
 .content-name {
   text-align:center;
 }
+
+.user-header-element{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 40px;
+  background: hsla(277, 59%, 71%, 0.8);
+  padding: 1px;
+}
+
+.user_nickname{
+  display: flex;
+  align-items: center;
+}
+
+.user_avatar{
+  display : flex;
+  width: 45px;
+  height: 45px;
+  position: relative;
+  border-radius: 50%;
+  object-fit: cover
+}

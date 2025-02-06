@@ -1,0 +1,49 @@
+{% extends "main/base.html" %}
+
+{% block title %}
+Регистрация
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="form-control d-flex flex-column gap-2">
+    {{ form.csrf_token }}
+
+    {{ form.username(class='form-control', placeholder='Username') }}
+    {% if form.username.errors %}
+        <div class="invalid-feedback" style="display: block!important;">
+            {% for error in form.username.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form.avatar(class='form-control', placeholder='Not necessary') }}
+    {% if form.avatar.errors %}
+        <div class="invalid-feedback" style="display: block!important;">
+            {% for error in form.avatar.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form.password(class='form-control', placeholder='Password') }}
+    {% if form.password.errors %}
+        <div class="invalid-feedback" style="display: block!important;">
+            {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form.confirm_password(class='form-control', placeholder='Confirm password') }}
+    {% if form.confirm_password.errors %}
+        <div class="invalid-feedback" style="display: block!important;">
+            {% for error in form.confirm_password.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form.submit(class="btn btn-success") }}
+</form>
+{% endblock %}

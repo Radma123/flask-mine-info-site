@@ -2,5 +2,17 @@
 <nav class="h2">
       <a href="{{ url_for('gpt.gpt_page') }}">GPT</a>
       <a href="{{ url_for('gpt.gpt_page') }}">Storage</a>
-      <button class="login-btn h2">Login</button>
+      {% if current_user.is_authenticated %}
+            <div class="user-header-element">
+                  {% if current_user.avatar %}
+                        <img src="{{ url_for('static', filename='uploads/'+ current_user.avatar) }}" alt="user_avatar" class="user_avatar">
+                  {% else %}
+                        <img src="{{ url_for('static', filename='media/default-avatar.png') }}" alt="user_avatar" class="user_avatar">
+                  {% endif %}
+                  <span class="user_nickname">{{ current_user.username }}</span>
+                  <a href="{{ url_for('user.logout') }}"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+      {% else %}
+            <a href="{{ url_for('user.login') }}" class="login-btn h2">Login</a>
+      {% endif %}
 </nav>
