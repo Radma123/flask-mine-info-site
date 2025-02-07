@@ -1,0 +1,15 @@
+.btn-hover {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-hover:hover {
+transform: scale(1.05);
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.login-form, .register-form{
+    display: flex;
+    flex-direction: column;
+    min-height: 80vh;
+    gap: 10px;
+}
