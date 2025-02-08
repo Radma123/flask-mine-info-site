@@ -9,7 +9,7 @@
                   {% else %}
                         <img src="{{ url_for('static', filename='media/default-avatar.png') }}" alt="user_avatar" class="user_avatar">
                   {% endif %}
-                  <span class="user_nickname">{{ current_user.username }}</span>
+                  <span value="{{ current_user.id }}" class="user_nickname">{{ current_user.username }}</span>
                   <a href="{{ url_for('user.logout') }}"><i class="bi bi-box-arrow-right"></i></a>
             </div>
       {% else %}
