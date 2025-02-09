@@ -1,12 +1,3 @@
-document.getElementById('new-chat-button').addEventListener('click', async function(){
-    document.getElementById("chat-place").replaceChildren();
-    if (isAuthenticated) {
-        console.log('Authenticated')
-        // window.location.href = "/gpt";
-    }
-});
-
-
 document.addEventListener("DOMContentLoaded", function() {
     if (!isAuthenticated) {
         let select = document.getElementById("gpt_value");

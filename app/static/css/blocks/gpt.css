@@ -39,24 +39,33 @@
 }
 
 .choice-element{
+    justify-content: center;
+    align-items: center;
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
 .conversations-to-choice-button{
+    justify-content: center;
+    display: flex;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: #f0e1eb;
     border-radius: 40px 40px 40px 40px; 
-    flex: 9;
+    flex: auto;
 }
 
 .delete-button{
+    align-items: center;
+    justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: #dd7171;
     --bs-btn-hover-bg: #e83333;
-    border-radius: 40px 40px 40px 40px;
-    flex: 1;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
 }
 
 .input-chat-container{

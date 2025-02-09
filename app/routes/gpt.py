@@ -9,9 +9,12 @@ gpt = Blueprint('gpt', __name__)
 
 @gpt.route('/gpt', methods = ['POST', 'GET'])
 def gpt_page():
-
     gpts = get_all_gpts()
-    return render_template('gpt/gpt_page.html',gpts=gpts)
+    if current_user.is_authenticated:
+        choice_elements = Chats.query.filter_by(user_id = current_user.id).order_by(desc(Chats.date)).all()
+        return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements)
+    else:
+        return render_template('gpt/gpt_page.html',gpts=gpts)
 
 @gpt.route("/send", methods=["POST"])
 def send():
@@ -98,6 +101,20 @@ def chat(chat_id):
 
 
         return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements, model=model)
+    
+    else:
+        abort(403)
+
+@gpt.route("/gpt/<uuid:chat_id>/delete", methods=["GET"])
+@login_required
+def delete_chat(chat_id):
+    if str(current_user.id) == Chats.query.filter_by(id = str(chat_id)).first().user_id:
+        remove_chat = Chats.query.filter_by(id = str(chat_id)).first()
+        db.session.delete(remove_chat)
+        db.session.commit()
+
+
+        return redirect("/gpt")
     
     else:
         abort(403)
