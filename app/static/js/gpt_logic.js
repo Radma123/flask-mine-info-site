@@ -2,6 +2,7 @@ document.getElementById('new-chat-button').addEventListener('click', async funct
     document.getElementById("chat-place").replaceChildren();
     if (isAuthenticated) {
         console.log('Authenticated')
+        // window.location.href = "/gpt";
     }
 });
 
@@ -72,22 +73,27 @@ document.getElementById("sendButton").addEventListener("click", async function()
         botMessage.textContent = result.message;
         chatPlace.appendChild(botMessage);
         chatPlace.scrollTop = chatPlace.scrollHeight;
+        console.log(11)
 
-        const ulElement = document.querySelector('.conversations-to-choice');
         if (isAuthenticated){
-            const user_id = document.querySelector(".user_nickname").getAttribute("value");
+            const chatElement = document.getElementById('chat-place');
+            console.log(22);
             const model = document.getElementById('gpt_value').value;
-            const user_message = text
-            const bot_message = botMessage.textContent
+            const user_message = text;
+            const bot_message = botMessage.textContent;
 
-            if (ulElement.childElementCount == 0) {
+            if (chatElement.childElementCount == 2) {
+                console.log(33);
                 let response = await fetch("/create_chat", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ "user_id": user_id, "model": model, "user_message": user_message, "bot_message": bot_message })
+                    body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
                 });
             
                 let result = await response.json();
+                console.log(44);
+                console.log('/'+result.chat_id);
+                window.location.href = '/gpt/'+result.chat_id;
 
                 // // Создаем новый элемент li
                 // const liElement = document.createElement('li');
@@ -113,7 +119,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
                 // // Добавляем новый li в ul
                 // ulElement.appendChild(liElement);
             }else{
-                console.log(ulElement.childElementCount);
+                console.log(chatElement.childElementCount);
             }
 
             

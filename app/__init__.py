@@ -29,7 +29,11 @@ def create_app():
 
     @app.errorhandler(404)
     def page_not_found(e):
-        return "Страница не найдена", 404
+        return "Page not found", 404
+
+    @app.errorhandler(403)
+    def page_prohibited(e):
+        return "You don't have permission to access this page", 403
 
 
     

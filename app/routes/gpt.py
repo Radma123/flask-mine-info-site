@@ -54,11 +54,13 @@ def create_chat():
         # Получаем данные из запроса
         data = request.get_json()
 
-        user_id = data.get("user_id")
+        user_id = current_user.id
+        print(user_id)
+        print(1)
         model = data.get("model")
         user_message, bot_message = data.get("user_message"), data.get("bot_message")
         
-        chat= Chats(user_id = user_id, model = model)
+        chat= Chats(user_id = user_id, model = model, first_message = user_message[:100])
         db.session.add(chat)
         db.session.commit()
 
@@ -69,11 +71,12 @@ def create_chat():
         bot_message = Messages(chat_id = chat_id, sender='bot', message = bot_message)
         db.session.add(bot_message)
         db.session.commit()
+
         
 
         return jsonify({
             "status": "success",
-            "message": "Chat created successfully!"
+            "chat_id": f"{chat_id}"
         }), 200
         
 
@@ -82,3 +85,19 @@ def create_chat():
             "status": "error",
             "message": str(e)
         }), 500
+    
+
+@gpt.route("/gpt/<uuid:chat_id>", methods=["GET"])
+@login_required
+def chat(chat_id):
+    if str(current_user.id) == Chats.query.filter_by(id = str(chat_id)).first().user_id:
+        gpts = get_all_gpts()
+        choice_elements = Chats.query.filter_by(user_id = current_user.id).order_by(desc(Chats.date)).all()
+        model = Chats.query.filter_by(id = str(chat_id)).first().model
+        # messages
+
+
+        return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements, model=model)
+    
+    else:
+        abort(403)

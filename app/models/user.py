@@ -28,6 +28,7 @@ class Chats(db.Model):
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.String, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     model = db.Column(db.String(50), nullable=False)
+    first_message = db.Column(db.String(100))
 
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
