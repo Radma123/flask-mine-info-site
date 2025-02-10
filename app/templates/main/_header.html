@@ -1,11 +1,11 @@
 <a href="{{ url_for('index.index_page') }}" class="index-link h1">Blessed</a>
 <nav class="h2">
       <a href="{{ url_for('gpt.gpt_page') }}">GPT</a>
-      <a href="{{ url_for('gpt.gpt_page') }}">Storage</a>
+      <a href="{{ url_for('storage.storage_page') }}">Storage</a>
       {% if current_user.is_authenticated %}
             <div class="user-header-element">
                   {% if current_user.avatar %}
-                        <img src="{{ url_for('static', filename='uploads/'+ current_user.avatar) }}" alt="user_avatar" class="user_avatar">
+                        <img src="{{ url_for('static', filename='uploads/'~ current_user.avatar) }}" alt="user_avatar" class="user_avatar">
                   {% else %}
                         <img src="{{ url_for('static', filename='media/default-avatar.png') }}" alt="user_avatar" class="user_avatar">
                   {% endif %}

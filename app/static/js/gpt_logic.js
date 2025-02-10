@@ -43,82 +43,73 @@ document.getElementById("sendButton").addEventListener("click", async function()
     
     chatPlace.scrollTop = chatPlace.scrollHeight;
 
+    try {
+        // Отправка данных на сервер
+        let response = await fetch("/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text, gpt: selectedGPT })
+        });
 
-    // Отправка данных на сервер
-    let response = await fetch("/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text, gpt: selectedGPT })
-    });
+        let result = await response.json();
+        
+        // Вернуть кнопку в исходное состояние
+        sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
+        sendButton.disabled = false;
+        
+        if (result.status === 'success') {
+            document.getElementById("floatingTextarea").value = ""; // Очистка поля
+            let botMessage = document.createElement("div");
+            botMessage.classList.add("message", "bot-message");
+            botMessage.textContent = result.message;
+            chatPlace.appendChild(botMessage);
+            chatPlace.scrollTop = chatPlace.scrollHeight;
+            console.log(11)
 
-    let result = await response.json();
-    
-    // Вернуть кнопку в исходное состояние
-    sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
-    sendButton.disabled = false;
-    
-    if (result.status === 'success') {
-        document.getElementById("floatingTextarea").value = ""; // Очистка поля
-        let botMessage = document.createElement("div");
-        botMessage.classList.add("message", "bot-message");
-        botMessage.textContent = result.message;
-        chatPlace.appendChild(botMessage);
-        chatPlace.scrollTop = chatPlace.scrollHeight;
-        console.log(11)
+            if (isAuthenticated){
+                const chatElement = document.getElementById('chat-place');
+                console.log(22);
+                const model = document.getElementById('gpt_value').value;
+                const user_message = text;
+                const bot_message = botMessage.textContent;
 
-        if (isAuthenticated){
-            const chatElement = document.getElementById('chat-place');
-            console.log(22);
-            const model = document.getElementById('gpt_value').value;
-            const user_message = text;
-            const bot_message = botMessage.textContent;
-
-            if (chatElement.childElementCount == 2) {
-                console.log(33);
-                let response = await fetch("/create_chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
-                });
-            
-                let result = await response.json();
-                console.log(44);
-                console.log('/'+result.chat_id);
-                window.location.href = '/gpt/'+result.chat_id;
-
-                // // Создаем новый элемент li
-                // const liElement = document.createElement('li');
-                // liElement.classList.add('choice-element');
-    
-                // // Добавляем кнопки в новый li
-                // const button1 = document.createElement('a');
-                // button1.classList.add('btn', 'btn-light', 'conversations-to-choice-button', 'text-truncate');
-                // button1.textContent = document.getElementById('chat-place').getElementsByClassName('user-message')[0].textContent
+                if (chatElement.childElementCount == 2) {
+                    console.log(33);
+                    let response = await fetch("/gpt/create_chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
+                    });
                 
-                // const button2 = document.createElement('button');
-                // button2.type = 'button';
-                // button2.classList.add('btn', 'btn-light', 'delete-button');
+                    let result = await response.json();
+                    console.log(44);
+                    console.log('/'+result.chat_id);
+                    window.location.href = '/gpt/'+result.chat_id;
+
+                }else{
+                    console.log(chatElement.childElementCount);
+                    const lastSegment = window.location.pathname.split('/').filter(Boolean).pop();
+                    let response = await fetch("/gpt/"+lastSegment+"/add", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
+                    });
+                }
+
                 
-                // const icon = document.createElement('i');
-                // icon.classList.add('bi', 'bi-trash3');
-                // button2.appendChild(icon);
-                
-                // // Добавляем кнопки в li
-                // liElement.appendChild(button1);
-                // liElement.appendChild(button2);
-                
-                // // Добавляем новый li в ul
-                // ulElement.appendChild(liElement);
+        
             }else{
-                console.log(chatElement.childElementCount);
+                console.log('User is not authentificated, history will not be saved');
             }
 
-            
-    
+        } else {
+            alert("Ошибка при отправке (попробуйте выбрать другую модель): " + result.message);
         }
-    } else {
-        alert("Ошибка при отправке (попробуйте выбрать другую модель): " + result.message);
+    }catch(err) {
+        console.error("Ошибка при отправке запроса:", err);
+        alert("Ошибка сети. Проверьте соединение и попробуйте снова.");
+        sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
+        sendButton.disabled = false;
     }
-    
 });
 

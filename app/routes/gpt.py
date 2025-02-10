@@ -45,13 +45,7 @@ def send():
             "message": str(e)
         }), 500
     
-# @gpt.route(f'/gpt/{}', methods = ['POST', 'GET'])
-# def chat():
-
-#     gpts = get_all_gpts()
-#     return render_template('gpt/gpt_page.html',gpts=gpts)
-
-@gpt.route("/create_chat", methods=["POST"])
+@gpt.route("/gpt/create_chat", methods=["POST"])
 def create_chat():
     try:
         # Получаем данные из запроса
@@ -97,10 +91,10 @@ def chat(chat_id):
         gpts = get_all_gpts()
         choice_elements = Chats.query.filter_by(user_id = current_user.id).order_by(desc(Chats.date)).all()
         model = Chats.query.filter_by(id = str(chat_id)).first().model
-        # messages
+        messages = Messages.query.filter_by(chat_id = str(chat_id)).all()
 
 
-        return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements, model=model)
+        return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements, model=model, messages=messages)
     
     else:
         abort(403)
@@ -115,6 +109,33 @@ def delete_chat(chat_id):
 
 
         return redirect("/gpt")
+    
+    else:
+        abort(403)
+    
+@gpt.route("/gpt/<uuid:chat_id>/add", methods=["POST"])
+@login_required
+def add_to_chat(chat_id):
+    if str(current_user.id) == Chats.query.filter_by(id = str(chat_id)).first().user_id:
+        data = request.get_json()
+        model = data.get("model")
+        user_message, bot_message = data.get("user_message"), data.get("bot_message")
+
+        Chats.query.filter_by(id = str(chat_id)).first().model = model
+        db.session.commit()
+
+
+        usr_message = Messages(chat_id = chat_id, sender='user', message = user_message)
+        db.session.add(usr_message)
+        db.session.commit()
+        bot_message = Messages(chat_id = chat_id, sender='bot', message = bot_message)
+        db.session.add(bot_message)
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message" : "Message added to db"
+        }), 200
     
     else:
         abort(403)

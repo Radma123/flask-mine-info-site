@@ -5,6 +5,7 @@ from .config import Config
 from .routes.index import index
 from .routes.user import user
 from .routes.gpt import gpt
+from .routes.storage import storage
 
 def create_app():
     app = Flask(__name__)
@@ -13,6 +14,7 @@ def create_app():
     app.register_blueprint(index)
     app.register_blueprint(user)
     app.register_blueprint(gpt)
+    app.register_blueprint(storage)
 
     #INIT APP
     db.init_app(app)
@@ -23,7 +25,7 @@ def create_app():
 
     # LOGIN MANAGER
     login_manager.login_view = 'user.login'
-    login_manager.login_message = 'Вы не можете перейти на эту страницу без авторизации'
+    login_manager.login_message = 'Please, Authorize first!'
     login_manager.login_message_category = 'info'
 
 

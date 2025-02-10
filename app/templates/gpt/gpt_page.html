@@ -15,7 +15,7 @@ GPT
         <ul class="h3 conversations-to-choice">
             {% for ch_el in choice_elements %}
                 <li class="choice-element">
-                    <a href="{{ url_for('gpt.gpt_page') }}/{{ ch_el.id }}" class="btn btn-light conversations-to-choice-button text-truncate">{{ ch_el.first_message }}</a><a href="{{ url_for('gpt.delete_chat', chat_id=ch_el.id) }}" class="btn btn-light delete-button"><i class="bi bi-trash3"></i></a>
+                    <a href="{{ url_for('gpt.gpt_page') }}/{{ ch_el.id }}" class="btn btn-light conversations-to-choice-button text-truncate {% if ch_el.id in request.path.split('/') %}active-choice{% endif %}">{{ ch_el.first_message }}</a><a href="{{ url_for('gpt.delete_chat', chat_id=ch_el.id) }}" class="btn btn-light delete-button"><i class="bi bi-trash3"></i></a>
                 </li>
             {% endfor %}
         </ul>
@@ -23,8 +23,9 @@ GPT
 
     <div class="input-chat-container">
         <div id="chat-place" class="chat-place">
-            <!-- <div class="message user-message">yyuguyguyfgtuyftyftyf uguyguyfgftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguygftyf uguyg</div>
-            <div class="message bot-message">yyuguyguyfgtuyftyftyfyyuguyguyfgtuyftyftyfyyuguyguyfgtuyftyftyfyyuguyguyfgtuyftyftyf</div> -->
+            {% for message in messages %}
+                <div class="message {{ message.sender }}-message">{{ message.message }}</div>
+            {% endfor %}
         </div>
         <div class="text-place">
             <button type="button" class="btn btn-light text-place-img"><i class="bi bi-image"></i></button>
