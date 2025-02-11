@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, jsonify, redirect, render_template, request
+from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
 from ..functions import get_all_gpts
 from ..extensions import client, db
@@ -139,3 +139,30 @@ def add_to_chat(chat_id):
     
     else:
         abort(403)
+
+# @gpt.route("/upload", methods=["POST"])
+# def upload():
+#     try:
+#         # Получаем файл из запроса
+#         uploaded_file = request.files.get("file")
+
+#         if not uploaded_file:
+#             return jsonify({
+#                 "status": "error",
+#                 "message": "Файл не был загружен"
+#             }), 400
+
+
+#         with open(current_app.config['SERVER_PATH']+uploaded_file.filename, "wb") as f:
+#             f.write(uploaded_file.read())
+
+#         return jsonify({
+#             "status": "success",
+#             "message": uploaded_file.filename
+#         }), 200
+
+#     except Exception as e:
+#         return jsonify({
+#             "status": "error",
+#             "message": str(e)
+#         }), 500

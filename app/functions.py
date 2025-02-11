@@ -20,5 +20,9 @@ def safe_picture(picture):
     output_size = (125, 125)
     i = Image.open(picture)
     i.thumbnail(output_size)
+
+    if not os.path.exists(current_app.config['SERVER_PATH']):
+        os.makedirs(current_app.config['SERVER_PATH']) 
+
     i.save(picture_path)
     return picture_fn

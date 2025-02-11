@@ -108,12 +108,56 @@ document.getElementById("sendButton").addEventListener("click", async function()
     }
 });
 
-document.getElementById('fileInput').addEventListener('change', function () {
-    let fileName = this.files[0] ? this.files[0].name : "Файл не выбран";
-    console.log(fileName);
-    let file = fileInput.files[0];
-    console.log(file)
-    let formData = new FormData();
-    formData.append("file", file);
-    console.log(formData)
+document.getElementById('fileInput').addEventListener('change', async function () {
+    let fileInput = this.files[0];
+
+    if (!fileInput) {
+        alert("Выберите файл!");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function (e) {
+        localStorage.setItem('savedFile', e.target.result); // Сохраняем base64 строку
+        console.log("Файл сохранён в локальном хранилище!");
+    };
+
+    reader.readAsDataURL(fileInput); // Преобразуем файл в base64
+
+
+    let upload_button = document.getElementById('custom-file-label');
+    upload_button.innerHTML = '<i class="bi bi-check"></i><button class="d-none" id="ready_img"></button>';
+
+    // let formData = new FormData();
+    // formData.append("file", fileInput);
+
+    // // let userMessage = document.createElement("div");
+    // // userMessage.classList.add("message", "user-message"); // Можно стилизовать
+    // // userMessage.textContent = text;
+    // // chatPlace.appendChild(userMessage);
+    
+    // // chatPlace.scrollTop = chatPlace.scrollHeight;
+
+
+    // try {
+    //     let response = await fetch("/upload", {
+    //         method: "POST",
+    //         body: formData // Не указываем "Content-Type"
+    //     });
+
+    //     let result = await response.json(); // Дожидаемся ответа от сервера
+
+    //     if (result.status === "success") {
+    //         console.log("Файл успешно загружен");
+    //         console.log(result.message);
+    //         let upload_button = document.getElementById('custom-file-label');
+    //         upload_button.innerHTML = '<button value="{{ result.message }}" id="delete_img"><i class="bi bi-x-lg d-none"></i></button>';
+    //     } else {
+    //         alert("Ошибка при отправке: " + result.message);
+    //     }
+    // } catch (err) {
+    //     console.error("Ошибка при отправке запроса:", err);
+    //     alert("Ошибка сети. Проверьте соединение и попробуйте снова.");
+    // }
 });
