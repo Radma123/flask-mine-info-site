@@ -31,7 +31,7 @@ def send():
             web_search=False
         )
 
-        print(response.choices[0].message.content)
+        # print(response.choices[0].message.content)
 
         return jsonify({
             "status": "success",
