@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     __tablename__ = 'user'
     
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    status = db.Column(db.String(50), default='user')
+    status = db.Column(db.String(50), nullable=False, default='user')
 
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
@@ -40,5 +40,6 @@ class Messages(db.Model):
     chat_id = db.Column(db.String, db.ForeignKey('chats.id', ondelete='CASCADE'), nullable=False)
     sender = db.Column(db.String(40), nullable=False)
     message = db.Column(db.String(4096), nullable=False)
+    media = db.Column(db.String(200))
 
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))

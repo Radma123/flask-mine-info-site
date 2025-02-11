@@ -1,3 +1,4 @@
+//загрузка последней модели из localStorage
 document.addEventListener("DOMContentLoaded", function() {
     if (!isAuthenticated) {
         let select = document.getElementById("gpt_value");
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-
+//реакция на Enter
 document.getElementById("floatingTextarea").addEventListener("keydown", function(event) {
     if (event.key === "Enter" && !event.shiftKey) { // Enter без Shift
         event.preventDefault(); // Отмена стандартного переноса строки
@@ -23,7 +24,7 @@ document.getElementById("floatingTextarea").addEventListener("keydown", function
     }
 });
 
-
+//запуск скрипта обработки нажатия
 document.getElementById("sendButton").addEventListener("click", async function() {
     let text = document.getElementById("floatingTextarea").value;
     let sendButton = document.getElementById("sendButton");
@@ -64,17 +65,14 @@ document.getElementById("sendButton").addEventListener("click", async function()
             botMessage.textContent = result.message;
             chatPlace.appendChild(botMessage);
             chatPlace.scrollTop = chatPlace.scrollHeight;
-            console.log(11)
 
             if (isAuthenticated){
                 const chatElement = document.getElementById('chat-place');
-                console.log(22);
                 const model = document.getElementById('gpt_value').value;
                 const user_message = text;
                 const bot_message = botMessage.textContent;
 
-                if (chatElement.childElementCount == 2) {
-                    console.log(33);
+                if (chatElement.childElementCount == 2 && chatElement.getElementsByClassName('bot-message')) {
                     let response = await fetch("/gpt/create_chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -82,12 +80,9 @@ document.getElementById("sendButton").addEventListener("click", async function()
                     });
                 
                     let result = await response.json();
-                    console.log(44);
-                    console.log('/'+result.chat_id);
                     window.location.href = '/gpt/'+result.chat_id;
 
                 }else{
-                    console.log(chatElement.childElementCount);
                     const lastSegment = window.location.pathname.split('/').filter(Boolean).pop();
                     let response = await fetch("/gpt/"+lastSegment+"/add", {
                         method: "POST",
@@ -113,3 +108,12 @@ document.getElementById("sendButton").addEventListener("click", async function()
     }
 });
 
+document.getElementById('fileInput').addEventListener('change', function () {
+    let fileName = this.files[0] ? this.files[0].name : "Файл не выбран";
+    console.log(fileName);
+    let file = fileInput.files[0];
+    console.log(file)
+    let formData = new FormData();
+    formData.append("file", file);
+    console.log(formData)
+});

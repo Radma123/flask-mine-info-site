@@ -167,3 +167,22 @@ i.bi{
 .active-choice {
     box-shadow: 0px 0px 7px 1px #4557f6cc;
 }
+
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    transition: background 0.3s;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    aspect-ratio: 1 / 1;
+}
+
+.custom-file-label:hover {
+    background-color: #e9ecef;
+}

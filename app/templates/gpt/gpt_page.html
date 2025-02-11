@@ -28,7 +28,10 @@ GPT
             {% endfor %}
         </div>
         <div class="text-place">
-            <button type="button" class="btn btn-light text-place-img"><i class="bi bi-image"></i></button>
+            <label class="custom-file-label">
+                <i class="bi bi-image"></i>
+                <input id="fileInput" type="file" class="btn btn-light text-place-img d-none">
+            </label>
             <textarea class="form-control type-place" placeholder="Text question here" id="floatingTextarea"></textarea>
             <button type="button" class="btn btn-light text-place-send" id="sendButton">
                 <i class="h1 bi bi-send"></i>
