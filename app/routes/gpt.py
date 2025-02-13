@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
-from ..functions import get_all_gpts
+from ..functions import get_all_gpts, gpt_send_message
 from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
@@ -24,18 +24,15 @@ def send():
 
         prompt = data.get("text")
         model = data.get("gpt")
+        photo = data.get("photo")
+        print(photo)
 
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            web_search=False
-        )
-
-        # print(response.choices[0].message.content)
+        message = gpt_send_message(prompt, model, photo)
+        print(message)
 
         return jsonify({
             "status": "success",
-            "message": response.choices[0].message.content
+            "message": message
         }), 200
         
 
@@ -140,7 +137,7 @@ def add_to_chat(chat_id):
     else:
         abort(403)
 
-# @gpt.route("/upload", methods=["POST"])
+# @gpt.route("/gpt/upload", methods=["POST"])
 # def upload():
 #     try:
 #         # Получаем файл из запроса

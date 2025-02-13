@@ -66,6 +66,12 @@ document.getElementById("sendButton").addEventListener("click", async function()
             chatPlace.appendChild(botMessage);
             chatPlace.scrollTop = chatPlace.scrollHeight;
 
+            let icon = document.getElementById("upload-img");
+            icon.classList.remove("bi-check");
+            icon.classList.add("bi-image"); 
+            document.getElementById("fileInput").disabled = false;
+            document.getElementById("custom-file-label").setAttribute("data-uploaded", "false");
+
             if (isAuthenticated){
                 const chatElement = document.getElementById('chat-place');
                 const model = document.getElementById('gpt_value').value;
@@ -109,55 +115,31 @@ document.getElementById("sendButton").addEventListener("click", async function()
 });
 
 document.getElementById('fileInput').addEventListener('change', async function () {
+    const MAX_FILE_SIZE = 100 * 1024 * 1024; //100MB;
     let fileInput = this.files[0];
-
+    
     if (!fileInput) {
         alert("Выберите файл!");
         return;
     }
 
-    let reader = new FileReader();
+    if (fileInput.size > MAX_FILE_SIZE) {
+        alert("Файл слишком большой. Максимальный размер: "+ Math.ceil(MAX_FILE_SIZE/(1024**2))+"MB");
+        return;
+    }
 
-    reader.onload = function (e) {
-        localStorage.setItem('savedFile', e.target.result); // Сохраняем base64 строку
-        console.log("Файл сохранён в локальном хранилище!");
-    };
+    // let reader = new FileReader();
+    // reader.onload = function (e) {
+    //     localStorage.setItem('savedFile', e.target.result); // Сохраняем base64 строку
+    //     console.log("Файл сохранён в локальном хранилище!");
+    // };
 
-    reader.readAsDataURL(fileInput); // Преобразуем файл в base64
+    // reader.readAsDataURL(fileInput); // Преобразуем файл в base64
 
+    document.getElementById("fileInput").disabled = true;
+    let icon = document.getElementById("upload-img");
+    icon.classList.remove("bi-image"); 
+    icon.classList.add("bi-check");
+    document.getElementById("custom-file-label").setAttribute("data-uploaded", "true");
 
-    let upload_button = document.getElementById('custom-file-label');
-    upload_button.innerHTML = '<i class="bi bi-check"></i><button class="d-none" id="ready_img"></button>';
-
-    // let formData = new FormData();
-    // formData.append("file", fileInput);
-
-    // // let userMessage = document.createElement("div");
-    // // userMessage.classList.add("message", "user-message"); // Можно стилизовать
-    // // userMessage.textContent = text;
-    // // chatPlace.appendChild(userMessage);
-    
-    // // chatPlace.scrollTop = chatPlace.scrollHeight;
-
-
-    // try {
-    //     let response = await fetch("/upload", {
-    //         method: "POST",
-    //         body: formData // Не указываем "Content-Type"
-    //     });
-
-    //     let result = await response.json(); // Дожидаемся ответа от сервера
-
-    //     if (result.status === "success") {
-    //         console.log("Файл успешно загружен");
-    //         console.log(result.message);
-    //         let upload_button = document.getElementById('custom-file-label');
-    //         upload_button.innerHTML = '<button value="{{ result.message }}" id="delete_img"><i class="bi bi-x-lg d-none"></i></button>';
-    //     } else {
-    //         alert("Ошибка при отправке: " + result.message);
-    //     }
-    // } catch (err) {
-    //     console.error("Ошибка при отправке запроса:", err);
-    //     alert("Ошибка сети. Проверьте соединение и попробуйте снова.");
-    // }
 });
