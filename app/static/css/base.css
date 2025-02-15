@@ -29,7 +29,7 @@ body {
 .content {
   height: 100vh;
   padding: 90px;
-  padding-bottom: 60px;
+  padding-bottom: 20px;
   text-align:justify;
   box-sizing: border-box;
 }

@@ -3,8 +3,8 @@ import os
 class Config(object):
     APPNAME = 'app'
     ROOT = os.path.abspath(APPNAME)
-    UPLOAD_PATH = '/static/uploads/'
-    SERVER_PATH = ROOT+UPLOAD_PATH
+    UPLOAD_PATH = ROOT+ '/static/uploads/'
+    UPLOAD_TEMP_PATH = UPLOAD_PATH+'uploads_temp/'
 
     USER = os.environ.get('POSTGRES_USER')
     PASSWORD = os.environ.get('POSTGRES_PASSWORD')
@@ -17,3 +17,5 @@ class Config(object):
 
     SQLALCHEMY_DATABASE_URI = f'postgresql://{USER}:{PASSWORD}@{HOST}/{DB}'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    ALLOWED_EXTENSIONS_PHOTOS = ['png', 'jpg', 'jpeg', 'webp', 'tiff', 'heif', 'heic', 'raw']

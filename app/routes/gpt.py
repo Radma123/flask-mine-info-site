@@ -1,9 +1,10 @@
-from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request
+from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
-from ..functions import get_all_gpts, gpt_send_message
+from ..functions import get_all_gpts, gpt_send_message, save_picture
 from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
+from werkzeug.utils import secure_filename
 
 gpt = Blueprint('gpt', __name__)
 
@@ -20,15 +21,20 @@ def gpt_page():
 def send():
     try:
         # Получаем данные из запроса
-        data = request.get_json()
+        prompt = request.form.get("text")
+        model = request.form.get("gpt")
 
-        prompt = data.get("text")
-        model = data.get("gpt")
-        photo = data.get("photo")
-        print(photo)
-
-        message = gpt_send_message(prompt, model, photo)
+        photo = request.files.get("photo")
+        if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']:
+            if current_user.is_authenticated:
+                pass #return
+            else:
+                photo_path = save_picture(photo, temp=True)
+                url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
+        print(url)
+        message = gpt_send_message(prompt, model, url)
         print(message)
+        raise
 
         return jsonify({
             "status": "success",
@@ -136,6 +142,11 @@ def add_to_chat(chat_id):
     
     else:
         abort(403)
+
+@gpt.route('/uploads/temp/<filename>', methods=['GET'])
+def get_uploaded_temp(filename):
+    """Возвращает загруженное фото по его имени"""
+    return send_from_directory(current_app.config['UPLOAD_TEMP_PATH'], filename)
 
 # @gpt.route("/gpt/upload", methods=["POST"])
 # def upload():

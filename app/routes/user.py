@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user
 from ..extensions import db, bcrypt
 from ..models.user import User
 from ..forms import RegistrationForm, LoginForm
-from ..functions import safe_picture
+from ..functions import save_avatar_picture
 
 user = Blueprint('user', __name__)
 
@@ -12,7 +12,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        avatar_filename = safe_picture(form.avatar.data)
+        avatar_filename = save_avatar_picture(form.avatar.data)
         user = User(username = form.username.data, avatar = avatar_filename, password = hashed_password)
 
         try:

@@ -31,6 +31,9 @@ document.getElementById("sendButton").addEventListener("click", async function()
     let selectedGPT = document.getElementById("gpt_value").value;
     let chatPlace = document.querySelector(".chat-place");
 
+    let dataUploaded = document.getElementById('custom-file-label').getAttribute('data-uploaded');
+    let photo = null;
+
     if (!text.trim()) return; // Игнорируем пустой ввод
 
     // Заменяем иконку отправки на спиннер
@@ -41,15 +44,38 @@ document.getElementById("sendButton").addEventListener("click", async function()
     userMessage.classList.add("message", "user-message"); // Можно стилизовать
     userMessage.textContent = text;
     chatPlace.appendChild(userMessage);
+    if (dataUploaded == "true") {
+        photo = document.getElementById('fileInput').files[0];
+        let reader = new FileReader();
+
+        let photo_base64 = await new Promise((resolve, reject) => {
+            reader.onload = function (e) {
+                resolve(e.target.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(photo);
+
+        })
+        let userPhoto = document.createElement("img");
+        userPhoto.classList.add("message", "user-message"); // Можно стилизовать
+        userPhoto.setAttribute('src', photo_base64);
+        chatPlace.appendChild(userPhoto);
+    };
     
     chatPlace.scrollTop = chatPlace.scrollHeight;
 
     try {
         // Отправка данных на сервер
+        let formData = new FormData();
+        formData.append("text", text);
+        formData.append("gpt", selectedGPT);
+        if (dataUploaded) {
+            formData.append("photo", photo);
+        }
+
         let response = await fetch("/send", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: text, gpt: selectedGPT })
+            body: formData
         });
 
         let result = await response.json();
@@ -60,10 +86,12 @@ document.getElementById("sendButton").addEventListener("click", async function()
         
         if (result.status === 'success') {
             document.getElementById("floatingTextarea").value = ""; // Очистка поля
+
             let botMessage = document.createElement("div");
             botMessage.classList.add("message", "bot-message");
             botMessage.textContent = result.message;
             chatPlace.appendChild(botMessage);
+            
             chatPlace.scrollTop = chatPlace.scrollHeight;
 
             let icon = document.getElementById("upload-img");
@@ -118,8 +146,8 @@ document.getElementById('fileInput').addEventListener('change', async function (
     const MAX_FILE_SIZE = 100 * 1024 * 1024; //100MB;
     let fileInput = this.files[0];
     
-    if (!fileInput) {
-        alert("Выберите файл!");
+    if (!fileInput || !fileInput.type.startsWith("image/")) {
+        alert("Выберите фото!");
         return;
     }
 

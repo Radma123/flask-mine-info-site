@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user
 from ..extensions import db, bcrypt
 from ..models.user import User
 from ..forms import RegistrationForm, LoginForm
-from ..functions import safe_picture
+from ..functions import save_picture
 
 storage = Blueprint('storage', __name__)
 
