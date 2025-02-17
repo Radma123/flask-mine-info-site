@@ -30,7 +30,17 @@ def gpt_send_message(prompt, model, photo=None):
         messages=messages,
         web_search=False
     )
+
     return response.choices[0].message.content
+
+def generate_img(prompt, model):
+    response = client.images.generate(
+        model=model,
+        prompt=prompt,
+        response_format="url"
+    )
+    
+    return response.data[0].url
 
 def save_avatar_picture(picture):
     if not picture:

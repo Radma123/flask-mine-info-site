@@ -33,6 +33,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
 
     let dataUploaded = document.getElementById('custom-file-label').getAttribute('data-uploaded');
     let photo = null;
+    let generate_img_mode = document.getElementById('custom-file-label').hidden
 
     if (!text.trim()) return; // Игнорируем пустой ввод
 
@@ -44,54 +45,66 @@ document.getElementById("sendButton").addEventListener("click", async function()
     userMessage.classList.add("message", "user-message"); // Можно стилизовать
     userMessage.textContent = text;
     chatPlace.appendChild(userMessage);
-    if (dataUploaded == "true") {
-        photo = document.getElementById('fileInput').files[0];
-        let reader = new FileReader();
 
-        let photo_base64 = await new Promise((resolve, reject) => {
-            reader.onload = function (e) {
-                resolve(e.target.result);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(photo);
-
-        })
-        let userPhoto = document.createElement("img");
-        userPhoto.classList.add("message", "user-message"); // Можно стилизовать
-        userPhoto.setAttribute('src', photo_base64);
-        chatPlace.appendChild(userPhoto);
-    };
+    if (!generate_img_mode) {
+        if (dataUploaded == "true") {
+            photo = document.getElementById('fileInput').files[0];
+            let reader = new FileReader();
     
-    chatPlace.scrollTop = chatPlace.scrollHeight;
-
+            let photo_base64 = await new Promise((resolve, reject) => {
+                reader.onload = function (e) {
+                    resolve(e.target.result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(photo);
+    
+            })
+            let userPhoto = document.createElement("img");
+            userPhoto.classList.add("message", "user-message"); // Можно стилизовать
+            userPhoto.setAttribute('src', photo_base64);
+            chatPlace.appendChild(userPhoto);
+        };
+        
+        chatPlace.scrollTop = chatPlace.scrollHeight;
+    }
     try {
-        // Отправка данных на сервер
-        let formData = new FormData();
+        formData = new FormData(); // Создаем объект FormData
         formData.append("text", text);
         formData.append("gpt", selectedGPT);
-        if (dataUploaded) {
-            formData.append("photo", photo);
+
+        if (!generate_img_mode) {
+            if (dataUploaded) {
+                formData.append("photo", photo);
+            }
+        }else{
+            formData.append("generate_img_mode", generate_img_mode);
         }
 
         let response = await fetch("/send", {
             method: "POST",
             body: formData
         });
-
         let result = await response.json();
-        
         // Вернуть кнопку в исходное состояние
         sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
         sendButton.disabled = false;
-        
+
+
         if (result.status === 'success') {
             document.getElementById("floatingTextarea").value = ""; // Очистка поля
 
-            let botMessage = document.createElement("div");
-            botMessage.classList.add("message", "bot-message");
-            botMessage.textContent = result.message;
-            chatPlace.appendChild(botMessage);
-            
+            if (!generate_img_mode) {
+                let botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.textContent = result.message;
+                chatPlace.appendChild(botMessage);
+            }else{
+                let botMessage = document.createElement("img");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.setAttribute('src', result.message);
+                chatPlace.appendChild(botMessage);
+            }
+        
             chatPlace.scrollTop = chatPlace.scrollHeight;
 
             let icon = document.getElementById("upload-img");
@@ -170,4 +183,14 @@ document.getElementById('fileInput').addEventListener('change', async function (
     icon.classList.add("bi-check");
     document.getElementById("custom-file-label").setAttribute("data-uploaded", "true");
 
+});
+
+document.getElementById('enable-img-mode').addEventListener('change', function() {
+    if (this.checked) {
+        console.log('Переключатель ВКЛЮЧЕН');
+        document.getElementById('custom-file-label').hidden = true
+    } else {
+        console.log('Переключатель ВЫКЛЮЧЕН');
+        document.getElementById('custom-file-label').hidden = false
+    }
 });

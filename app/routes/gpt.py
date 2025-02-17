@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
-from ..functions import get_all_gpts, gpt_send_message, save_picture
+from ..functions import get_all_gpts, gpt_send_message, save_picture, generate_img
 from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
@@ -23,18 +23,24 @@ def send():
         # Получаем данные из запроса
         prompt = request.form.get("text")
         model = request.form.get("gpt")
-
         photo = request.files.get("photo")
+        generate_img_mode = request.form.get("generate_img_mode")
+
         if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']:
             if current_user.is_authenticated:
                 pass #return
             else:
                 photo_path = save_picture(photo, temp=True)
                 url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
-        print(url)
-        message = gpt_send_message(prompt, model, url)
-        print(message)
-        raise
+        
+        if not generate_img_mode:
+            print(url)
+            message = gpt_send_message(prompt, model, url)
+            print(message)
+            raise
+        else:
+            message = generate_img(prompt, model)
+            print(message)
 
         return jsonify({
             "status": "success",
