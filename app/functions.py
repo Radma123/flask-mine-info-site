@@ -37,10 +37,10 @@ def generate_img(prompt, model):
     response = client.images.generate(
         model=model,
         prompt=prompt,
-        response_format="url"
+        response_format="b64_json"
     )
     
-    return response.data[0].url
+    return f'data:image/png;base64, {response.data[0].b64_json}'
 
 def save_avatar_picture(picture):
     if not picture:

@@ -1,5 +1,6 @@
+import PIL.Image
 from g4f.client import Client
-
+import PIL
 client = Client()
 # response = client.chat.completions.create(
 #     model="gpt-4o-mini",
@@ -17,9 +18,14 @@ client = Client()
 
 # print(response.choices[0].message.content)
 
+import base64
+from io import BytesIO
+from PIL import Image
+
 response = client.images.generate(
     model="flux",
     prompt="a white siamese cat",
     response_format="b64_json"
 )
-print(response.data[0])
+
+print(response.data[0].b64_json)

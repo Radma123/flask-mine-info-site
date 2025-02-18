@@ -34,17 +34,15 @@ def send():
                 url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
         
         if not generate_img_mode:
-            print(url)
             message = gpt_send_message(prompt, model, url)
-            print(message)
-            raise
         else:
-            message = generate_img(prompt, model)
-            print(message)
+            bot_url = generate_img(prompt, model)
 
         return jsonify({
             "status": "success",
-            "message": message
+            "message": message,
+            "user_url": message.user_url if message.user_url else None,
+            "bot_url": bot_url if bot_url else None
         }), 200
         
 

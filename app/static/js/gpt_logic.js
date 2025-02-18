@@ -101,7 +101,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
             }else{
                 let botMessage = document.createElement("img");
                 botMessage.classList.add("message", "bot-message");
-                botMessage.setAttribute('src', result.message);
+                botMessage.setAttribute('src', result.url);
                 chatPlace.appendChild(botMessage);
             }
         
@@ -118,12 +118,16 @@ document.getElementById("sendButton").addEventListener("click", async function()
                 const model = document.getElementById('gpt_value').value;
                 const user_message = text;
                 const bot_message = botMessage.textContent;
+                if (document.getElementById('fileInput').files[0]){
+                    url = result.url
+                }
+                document.getElementById('fileInput').files[0].value = "";
 
                 if (chatElement.childElementCount == 2 && chatElement.getElementsByClassName('bot-message')) {
                     let response = await fetch("/gpt/create_chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
+                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message, photo_url})
                     });
                 
                     let result = await response.json();
