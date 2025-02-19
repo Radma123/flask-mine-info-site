@@ -24,141 +24,6 @@ document.getElementById("floatingTextarea").addEventListener("keydown", function
     }
 });
 
-//запуск скрипта обработки нажатия
-document.getElementById("sendButton").addEventListener("click", async function() {
-    let text = document.getElementById("floatingTextarea").value;
-    let sendButton = document.getElementById("sendButton");
-    let selectedGPT = document.getElementById("gpt_value").value;
-    let chatPlace = document.querySelector(".chat-place");
-
-    let dataUploaded = document.getElementById('custom-file-label').getAttribute('data-uploaded');
-    let photo = null;
-    let generate_img_mode = document.getElementById('custom-file-label').hidden
-
-    if (!text.trim()) return; // Игнорируем пустой ввод
-
-    // Заменяем иконку отправки на спиннер
-    sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-    sendButton.disabled = true;
-
-    let userMessage = document.createElement("div");
-    userMessage.classList.add("message", "user-message"); // Можно стилизовать
-    userMessage.textContent = text;
-    chatPlace.appendChild(userMessage);
-
-    if (!generate_img_mode) {
-        if (dataUploaded == "true") {
-            photo = document.getElementById('fileInput').files[0];
-            let reader = new FileReader();
-    
-            let photo_base64 = await new Promise((resolve, reject) => {
-                reader.onload = function (e) {
-                    resolve(e.target.result);
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(photo);
-    
-            })
-            let userPhoto = document.createElement("img");
-            userPhoto.classList.add("message", "user-message"); // Можно стилизовать
-            userPhoto.setAttribute('src', photo_base64);
-            chatPlace.appendChild(userPhoto);
-        };
-        
-        chatPlace.scrollTop = chatPlace.scrollHeight;
-    }
-    try {
-        formData = new FormData(); // Создаем объект FormData
-        formData.append("text", text);
-        formData.append("gpt", selectedGPT);
-
-        if (!generate_img_mode) {
-            if (dataUploaded) {
-                formData.append("photo", photo);
-            }
-        }else{
-            formData.append("generate_img_mode", generate_img_mode);
-        }
-
-        let response = await fetch("/send", {
-            method: "POST",
-            body: formData
-        });
-        let result = await response.json();
-        // Вернуть кнопку в исходное состояние
-        sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
-        sendButton.disabled = false;
-
-
-        if (result.status === 'success') {
-            document.getElementById("floatingTextarea").value = ""; // Очистка поля
-
-            if (!generate_img_mode) {
-                let botMessage = document.createElement("div");
-                botMessage.classList.add("message", "bot-message");
-                botMessage.textContent = result.message;
-                chatPlace.appendChild(botMessage);
-            }else{
-                let botMessage = document.createElement("img");
-                botMessage.classList.add("message", "bot-message");
-                botMessage.setAttribute('src', result.url);
-                chatPlace.appendChild(botMessage);
-            }
-        
-            chatPlace.scrollTop = chatPlace.scrollHeight;
-
-            let icon = document.getElementById("upload-img");
-            icon.classList.remove("bi-check");
-            icon.classList.add("bi-image"); 
-            document.getElementById("fileInput").disabled = false;
-            document.getElementById("custom-file-label").setAttribute("data-uploaded", "false");
-
-            if (isAuthenticated){
-                const chatElement = document.getElementById('chat-place');
-                const model = document.getElementById('gpt_value').value;
-                const user_message = text;
-                const bot_message = botMessage.textContent;
-                if (document.getElementById('fileInput').files[0]){
-                    url = result.url
-                }
-                document.getElementById('fileInput').files[0].value = "";
-
-                if (chatElement.childElementCount == 2 && chatElement.getElementsByClassName('bot-message')) {
-                    let response = await fetch("/gpt/create_chat", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message, photo_url})
-                    });
-                
-                    let result = await response.json();
-                    window.location.href = '/gpt/'+result.chat_id;
-
-                }else{
-                    const lastSegment = window.location.pathname.split('/').filter(Boolean).pop();
-                    let response = await fetch("/gpt/"+lastSegment+"/add", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({"model": model, "user_message": user_message, "bot_message": bot_message })
-                    });
-                }
-
-                
-        
-            }else{
-                console.log('User is not authentificated, history will not be saved');
-            }
-
-        } else {
-            alert("Ошибка при отправке (попробуйте выбрать другую модель): " + result.message);
-        }
-    }catch(err) {
-        console.error("Ошибка при отправке запроса:", err);
-        alert("Ошибка сети. Проверьте соединение и попробуйте снова.");
-        sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
-        sendButton.disabled = false;
-    }
-});
-
 document.getElementById('fileInput').addEventListener('change', async function () {
     const MAX_FILE_SIZE = 100 * 1024 * 1024; //100MB;
     let fileInput = this.files[0];
@@ -197,4 +62,119 @@ document.getElementById('enable-img-mode').addEventListener('change', function()
         console.log('Переключатель ВЫКЛЮЧЕН');
         document.getElementById('custom-file-label').hidden = false
     }
+});
+
+document.getElementById("sendButton").addEventListener("click", async function() {
+    // Сбор данных HTML______________________________________________________________________________________________________________
+    let user_message = document.getElementById("floatingTextarea").value;
+    let selectedGPT = document.getElementById("gpt_value").value;
+    let dataUploaded = document.getElementById('custom-file-label').getAttribute('data-uploaded');
+    let photo = null;
+    let generate_img_mode = document.getElementById('custom-file-label').hidden;  // Булево значение
+    let chat_id = window.location.pathname.split('/').filter(Boolean).pop()
+    isAuthenticated;
+
+    let chatPlace = document.querySelector(".chat-place");
+    let sendButton = document.getElementById("sendButton");
+
+    // Проверка на пустой ввод
+    if (!user_message.trim()) return;
+
+    // Меняем кнопку на спиннер перед отправкой
+    sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    sendButton.disabled = true;
+
+    // Если загружено изображение
+    if (dataUploaded === 'true') {
+        photo = document.getElementById('fileInput').files[0];
+    }
+
+    // Отображение сообщения пользователя______________________________________________________________________________________________________________
+    if (generate_img_mode === false) { 
+        let userMessage = document.createElement("div");
+        userMessage.classList.add("message", "user-message");
+        userMessage.textContent = user_message;
+        chatPlace.appendChild(userMessage);
+    } else {
+        try {
+            let reader = new FileReader();
+            let photo_base64 = await new Promise((resolve, reject) => {
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(photo);
+            });
+
+            let userPhoto = document.createElement("img");
+            userPhoto.classList.add("message", "user-message");
+            userPhoto.setAttribute('src', photo_base64);
+            chatPlace.appendChild(userPhoto);
+        } catch (error) {
+            console.error("Ошибка чтения файла:", error);
+            return;
+        }
+    }
+
+    // Прокрутка вниз
+    chatPlace.scrollTop = chatPlace.scrollHeight;
+
+    //Обработка и отправка сообщения______________________________________________________________________________________________________________
+    formData = new FormData();
+    formData.append("user_message", user_message);
+    formData.append("gpt", selectedGPT);
+    formData.append("photo", photo);
+    formData.append("generate_img_mode", generate_img_mode);
+    formData.append("chat_id", chat_id);
+    
+    if (!isAuthenticated) {
+        formData.append("database_mode", "guest");
+    }else if (chat_id != "gpt"){
+        formData.append("database_mode", "add_to_chat");
+    }else if (chatPlace.childElementCount == 1){
+        formData.append("database_mode", "create_chat");
+    }else{
+        alert('Error of chosing your current status')
+    }
+
+    try{
+        let response = await fetch("/send", {
+            method: "POST",
+            body: formData
+        });
+        let result = await response.json();
+
+        if (result.status === 'success') {
+            console.log(bot_url);
+            if (result.bot_url != 'None') {
+                let botMessage = document.createElement("img");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.setAttribute('src', result.bot_url);
+                chatPlace.appendChild(botMessage);
+            }else{
+                let botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.textContent = result.message;
+                chatPlace.appendChild(botMessage);
+            }
+
+
+
+            //очистка чата и файлов
+            document.getElementById("floatingTextarea").value = "";
+            let icon = document.getElementById("upload-img");
+            icon.classList.remove("bi-check");
+            icon.classList.add("bi-image"); 
+            document.getElementById("fileInput").disabled = false;
+            document.getElementById("custom-file-label").setAttribute("data-uploaded", "false");
+            document.getElementById('fileInput').value = "";
+        }else{
+            alert("Ошибка при отправке (попробуйте выбрать другую модель): " + result.message);
+        }
+    }catch(err){
+        console.error("Ошибка при отправке запроса:", err);
+        alert("Ошибка сети. Проверьте соединение и попробуйте снова.");
+    }finally{
+        sendButton.innerHTML = '<i class="h1 bi bi-send"></i>';
+        sendButton.disabled = false;
+    }
+    
 });
