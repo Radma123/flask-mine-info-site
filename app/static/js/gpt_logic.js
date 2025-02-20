@@ -90,7 +90,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
     }
 
     // Отображение сообщения пользователя______________________________________________________________________________________________________________
-    if (generate_img_mode === false) { 
+    if (dataUploaded === 'false') { 
         let userMessage = document.createElement("div");
         userMessage.classList.add("message", "user-message");
         userMessage.textContent = user_message;
@@ -143,8 +143,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
         let result = await response.json();
 
         if (result.status === 'success') {
-            console.log(bot_url);
-            if (result.bot_url != 'None') {
+            if (result.bot_url) {
                 let botMessage = document.createElement("img");
                 botMessage.classList.add("message", "bot-message");
                 botMessage.setAttribute('src', result.bot_url);
@@ -156,7 +155,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
                 chatPlace.appendChild(botMessage);
             }
 
-
+            chatPlace.scrollTop = chatPlace.scrollHeight;
 
             //очистка чата и файлов
             document.getElementById("floatingTextarea").value = "";

@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
-from ..functions import get_all_gpts, gpt_send_message, save_picture, generate_img
+from ..functions import get_all_gpts, gpt_send_message, save_picture, generate_img, create_chat
 from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
@@ -17,44 +17,6 @@ def gpt_page():
     else:
         return render_template('gpt/gpt_page.html',gpts=gpts)
 
-    
-@gpt.route("/gpt/create_chat", methods=["POST"])
-def create_chat():
-    try:
-        # Получаем данные из запроса
-        data = request.get_json()
-
-        user_id = current_user.id
-        print(user_id)
-        print(1)
-        model = data.get("model")
-        user_message, bot_message = data.get("user_message"), data.get("bot_message")
-        
-        chat= Chats(user_id = user_id, model = model, first_message = user_message[:100])
-        db.session.add(chat)
-        db.session.commit()
-
-        chat_id = Chats.query.filter_by(user_id = user_id).order_by(desc(Chats.date)).first().id
-        usr_message = Messages(chat_id = chat_id, sender='user', message = user_message)
-        db.session.add(usr_message)
-        db.session.commit()
-        bot_message = Messages(chat_id = chat_id, sender='bot', message = bot_message)
-        db.session.add(bot_message)
-        db.session.commit()
-
-        
-
-        return jsonify({
-            "status": "success",
-            "chat_id": f"{chat_id}"
-        }), 200
-        
-
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
     
 
 @gpt.route("/gpt/<uuid:chat_id>", methods=["GET"])
@@ -86,43 +48,19 @@ def delete_chat(chat_id):
     else:
         abort(403)
     
-@gpt.route("/gpt/<uuid:chat_id>/add", methods=["POST"])
-@login_required
-def add_to_chat(chat_id):
-    if str(current_user.id) == Chats.query.filter_by(id = str(chat_id)).first().user_id:
-        data = request.get_json()
-        model = data.get("model")
-        user_message, bot_message = data.get("user_message"), data.get("bot_message")
-
-        Chats.query.filter_by(id = str(chat_id)).first().model = model
-        db.session.commit()
-
-
-        usr_message = Messages(chat_id = chat_id, sender='user', message = user_message)
-        db.session.add(usr_message)
-        db.session.commit()
-        bot_message = Messages(chat_id = chat_id, sender='bot', message = bot_message)
-        db.session.add(bot_message)
-        db.session.commit()
-
-        return jsonify({
-            "status": "success",
-            "message" : "Message added to db"
-        }), 200
-    
-    else:
-        abort(403)
 
 @gpt.route('/uploads/temp/<filename>', methods=['GET'])
 def get_uploaded_temp(filename):
     """Возвращает загруженное временное фото по его имени"""
     return send_from_directory(current_app.config['UPLOAD_TEMP_PATH'], filename)
 
-@gpt.route('/uploads/temp/<filename>', methods=['GET'])
+@gpt.route('/uploads/<filename>', methods=['GET'])
 @login_required
 def get_uploaded_private(filename):
     """Возвращает загруженное приватное фото по его имени"""
-    return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
+    if current_user.id == Messages.query.filter_by(media = filename).first().user_id:
+        return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
+    abort(403)
 
 # @gpt.route("/gpt/upload", methods=["POST"])
 # def upload():
@@ -162,36 +100,65 @@ def send():
 
         #messages
         user_message = request.form.get("user_message") #'text'
-        photo = request.files.get("photo") #'base64_url'
+        photo = request.files.get("photo") #'bytes'
 
         #user_info (protected)
         authenticated = current_user.is_authenticated
         user_id = current_user.id if authenticated else None
 
+        url = None
+        bot_url = None
+        message = None
+        chat_url = None
+        photo_path = None
+        bot_photo_path = None
+        #Данные________________________________________________________________________________________________
         print(1)
         print(request.form)
 
-        if photo and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']: #вопрос с фото или без
+        if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']: #вопрос с фото или без
+            print(2)
             if current_user.is_authenticated:
-                photo_path = save_picture(photo, temp=False)
+                photo_path = save_picture(photo, temp=False, img_type='img')
                 url = url_for('gpt.get_uploaded_private', filename=photo_path, _external=True)
                 
             else:
-                photo_path = save_picture(photo, temp=True)
+                photo_path = save_picture(photo, temp=True, img_type='img')
                 url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
-        elif generate_img_mode: #генерация фото
-            bot_url = generate_img(user_message, model)
-        else:
-            raise Exception("No photo or generate_img_mode found")
-        
-        message = gpt_send_message(user_message, model, url)
 
+        if generate_img_mode == 'true': #генерация фото
+            if authenticated:
+                print(11)
+                generated_base64 = generate_img(user_message, model) #base64
+                print(12)
+                print(generated_base64)
+                bot_photo_path = save_picture(generated_base64, temp=False, img_type='base64')
+                print('-----------------')
+                print(bot_photo_path)
+                bot_url = url_for('gpt.get_uploaded_private', filename=bot_photo_path, _external=True)
+            else:
+                bot_url = generate_img(user_message, model) #base64
+        else:
+            message = gpt_send_message(user_message, model, photo=url)
+
+        print(3)
         print(message)
+
+        if authenticated:
+            match database_mode:
+                case 'create_chat':
+                    chat_url = create_chat(user_id=user_id, model=model, user_message=user_message, photo_path=photo_path, message=message, bot_photo_path=bot_photo_path)
+                case 'add_to_chat':
+                    pass
+                case _:
+                    pass
+                
 
         return jsonify({
             "status": "success",
             "message": message,
-            "bot_url": bot_url if bot_url else None
+            "bot_url": bot_url,
+            "redirection": chat_url
         }), 200
         
 

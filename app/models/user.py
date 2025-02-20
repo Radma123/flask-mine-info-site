@@ -38,8 +38,9 @@ class Messages(db.Model):
     
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     chat_id = db.Column(db.String, db.ForeignKey('chats.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     sender = db.Column(db.String(40), nullable=False)
-    message = db.Column(db.String(4096), nullable=False)
+    message = db.Column(db.String(4096))
     media = db.Column(db.String(200))
 
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
