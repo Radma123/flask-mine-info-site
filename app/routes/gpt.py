@@ -179,13 +179,13 @@ def send():
             else:
                 photo_path = save_picture(photo, temp=True)
                 url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
-
-            message = gpt_send_message(user_message, model, url)
         elif generate_img_mode: #генерация фото
             bot_url = generate_img(user_message, model)
         else:
             raise Exception("No photo or generate_img_mode found")
         
+        message = gpt_send_message(user_message, model, url)
+
         print(message)
 
         return jsonify({

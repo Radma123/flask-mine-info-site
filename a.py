@@ -18,14 +18,21 @@ client = Client()
 
 # print(response.choices[0].message.content)
 
-import base64
-from io import BytesIO
-from PIL import Image
+# import base64
+# from io import BytesIO
+# from PIL import Image
 
-response = client.images.generate(
-    model="flux",
-    prompt="a white siamese cat",
-    response_format="b64_json"
+# response = client.images.generate(
+#     model="flux",
+#     prompt="a white siamese cat",
+#     response_format="b64_json"
+# )
+
+# print(response.data[0].b64_json)
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}],
+    web_search=False
 )
-
-print(response.data[0].b64_json)
+print(response.choices[0].message.content)
