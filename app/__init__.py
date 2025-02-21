@@ -1,6 +1,8 @@
 from flask import Flask
 from .extensions import db,migrate, bcrypt, assets, login_manager
 from .config import Config
+from sqlalchemy import event
+from .models.user import Chats
 
 from .routes.index import index
 from .routes.user import user
@@ -28,6 +30,8 @@ def create_app():
     login_manager.login_message = 'Please, Authorize first!'
     login_manager.login_message_category = 'info'
 
+    # Регистрация события before_delete для таблицы Chats
+    event.listen(Chats, "before_delete", Chats.before_delete)
 
     @app.errorhandler(404)
     def page_not_found(e):
