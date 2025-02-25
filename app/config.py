@@ -19,3 +19,5 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     ALLOWED_EXTENSIONS_PHOTOS = ['png', 'jpg', 'jpeg', 'webp', 'tiff', 'heif', 'heic', 'raw']
+
+    LOG_FILE = "logs/app.log"

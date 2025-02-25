@@ -1,4 +1,5 @@
 from io import BytesIO
+import logging
 from g4f import models
 import secrets
 import os
@@ -13,6 +14,20 @@ def get_all_gpts() -> list:
     gpts = models._all_models
 
     return gpts
+
+#возвращает ЧИСТЫЙ base64 лбрезанный
+def compress_base64(base64_string, max_size=(1024, 1024)):
+    base64_string = base64_string.split(' ')[-1]
+    img_bytes = base64.b64decode(base64_string)
+
+    i = Image.open(BytesIO(img_bytes))
+    i.thumbnail(max_size)
+
+    buffer = BytesIO()
+    i.save(buffer, format="PNG")
+
+    return base64.b64encode(buffer.getvalue()).decode()
+
 
 def gpt_send_message(prompt, model, photo=None):
     messages = [{"role": "user", "content": prompt}]
@@ -47,50 +62,44 @@ def generate_img(prompt, model):
     return f'data:image/png;base64, {response.data[0].b64_json}'
 
 def create_chat(user_id, model, user_message, photo_path=None, message=None, bot_photo_path=None):
-    first_message = user_message[:100] if message else 'Your photo 🖼️'
+    try:
+        first_message = user_message[:100] if message else 'Your photo 🖼️'
 
-    chat= Chats(user_id = user_id, model = model, first_message = first_message)
-    db.session.add(chat)
-    db.session.commit()
+        chat= Chats(user_id = user_id, model = model, first_message = first_message)
+        db.session.add(chat)
+        db.session.commit()
 
-    chat_id = Chats.query.filter_by(user_id = user_id).order_by(desc(Chats.date)).first().id
+        chat_id = Chats.query.filter_by(user_id = user_id).order_by(desc(Chats.date)).first().id
 
-    usr_message = Messages(chat_id = chat_id, user_id=user_id, sender='user', message = user_message, media=photo_path)
-    db.session.add(usr_message)
-    db.session.commit()
-    message = Messages(chat_id = chat_id, user_id=user_id, sender='bot', message = message, media = bot_photo_path)
-    db.session.add(message)
-    db.session.commit()
+        usr_message = Messages(chat_id = chat_id, user_id=user_id, sender='user', message = user_message, media=photo_path)
+        db.session.add(usr_message)
+        db.session.commit()
+        message = Messages(chat_id = chat_id, user_id=user_id, sender='bot', message = message, media = bot_photo_path)
+        db.session.add(message)
+        db.session.commit()
+        current_app.logger.info(f"Создание чата: {chat_id}")
+        
+        return chat_id
+    except Exception as e:
+        current_app.logger.error(f"Ошибка создания чата: {str(e)}", exc_info=True)
 
-    return chat_id
+def add_to_chat(chat_id, user_id, model, user_message, photo_path=None, message=None, bot_photo_path=None):
+    try:
+        if user_id == Chats.query.filter_by(id = str(chat_id)).first().user_id:
+            Chats.query.filter_by(id = str(chat_id)).first().model = model
+            db.session.commit()
 
-
-# @gpt.route("/gpt/<uuid:chat_id>/add", methods=["POST"])
-# @login_required
-# def add_to_chat(chat_id):
-#     if str(current_user.id) == Chats.query.filter_by(id = str(chat_id)).first().user_id:
-#         data = request.get_json()
-#         model = data.get("model")
-#         user_message, bot_message = data.get("user_message"), data.get("bot_message")
-
-#         Chats.query.filter_by(id = str(chat_id)).first().model = model
-#         db.session.commit()
-
-
-#         usr_message = Messages(chat_id = chat_id, sender='user', message = user_message)
-#         db.session.add(usr_message)
-#         db.session.commit()
-#         bot_message = Messages(chat_id = chat_id, sender='bot', message = bot_message)
-#         db.session.add(bot_message)
-#         db.session.commit()
-
-#         return jsonify({
-#             "status": "success",
-#             "message" : "Message added to db"
-#         }), 200
-    
-#     else:
-#         abort(403)
+            usr_message = Messages(chat_id = chat_id, user_id=user_id, sender='user', message = user_message, media=photo_path)
+            db.session.add(usr_message)
+            db.session.commit()
+            message = Messages(chat_id = chat_id, user_id=user_id, sender='bot', message = message, media = bot_photo_path)
+            db.session.add(message)
+            db.session.commit()
+        else:
+            raise Exception("Нельзя отправить сообщение другому пользователю")
+    except Exception as e:
+        current_app.logger.error(f"Ошибка добавления сообщения в чат: {str(e)}", exc_info=True)
+        
 
 
 def save_avatar_picture(picture):

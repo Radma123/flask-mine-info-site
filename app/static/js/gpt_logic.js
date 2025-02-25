@@ -143,6 +143,10 @@ document.getElementById("sendButton").addEventListener("click", async function()
         let result = await response.json();
 
         if (result.status === 'success') {
+            if (result.redirection) {
+                window.location.href = '/gpt/'+result.redirection;
+            }
+
             if (result.bot_url) {
                 let botMessage = document.createElement("img");
                 botMessage.classList.add("message", "bot-message");

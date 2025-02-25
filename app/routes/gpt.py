@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
-from ..functions import get_all_gpts, gpt_send_message, save_picture, generate_img, create_chat
+from ..functions import get_all_gpts, gpt_send_message, save_picture, generate_img, create_chat, add_to_chat
 from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
@@ -118,13 +118,8 @@ def send():
 
         if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']: #вопрос с фото или без
             print(2)
-            if current_user.is_authenticated:
-                photo_path = save_picture(photo, temp=False, img_type='img')
-                url = url_for('gpt.get_uploaded_private', filename=photo_path, _external=True)
-                
-            else:
-                photo_path = save_picture(photo, temp=True, img_type='img')
-                url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
+            photo_path = save_picture(photo, temp=True, img_type='img')
+            url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
 
         if generate_img_mode == 'true': #генерация фото
             if authenticated:
@@ -132,10 +127,10 @@ def send():
                 generated_base64 = generate_img(user_message, model) #base64
                 print(12)
                 print(generated_base64)
-                bot_photo_path = save_picture(generated_base64, temp=False, img_type='base64')
+                bot_photo_path = save_picture(generated_base64, temp=True, img_type='base64')
                 print('-----------------')
                 print(bot_photo_path)
-                bot_url = url_for('gpt.get_uploaded_private', filename=bot_photo_path, _external=True)
+                bot_url = url_for('gpt.get_uploaded_temp', filename=bot_photo_path, _external=True)
             else:
                 bot_url = generate_img(user_message, model) #base64
         else:
@@ -149,7 +144,7 @@ def send():
                 case 'create_chat':
                     chat_url = create_chat(user_id=user_id, model=model, user_message=user_message, photo_path=photo_path, message=message, bot_photo_path=bot_photo_path)
                 case 'add_to_chat':
-                    pass
+                    add_to_chat(chat_id=chat_id, user_id=user_id, model=model, user_message=user_message, photo_path=photo_path, message=message, bot_photo_path=bot_photo_path)
                 case _:
                     pass
                 

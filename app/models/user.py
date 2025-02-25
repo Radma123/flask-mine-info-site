@@ -22,6 +22,20 @@ class User(db.Model, UserMixin):
 
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
+    @staticmethod
+    def before_delete(mapper, connection, target):
+        """Обработчик событий для удаления пользователя."""
+        print(f"Удаление пользователя с ID: {target.id}")
+        # Получаем все чаты, связанные с этим пользователем, и удаляем файлы сообщений
+        chats = Chats.query.filter_by(user_id=target.id).all()
+        for chat in chats:
+            # Для каждого чата удаляем связанные с ним сообщения
+            messages = Messages.query.filter_by(chat_id=chat.id).all()
+            for message in messages:
+                message.delete_file()  # Удаление файла из сообщений
+            # Чат будет удалён каскадно, так что можем обработать файлы сообщений до его удаления
+            db.session.delete(chat)
+
 
 class Chats(db.Model):
     __tablename__ = 'chats'
@@ -60,7 +74,7 @@ class Messages(db.Model):
         if self.media is None:
             return
         
-        file_path = os.path.join(current_app.config['UPLOAD_PATH'], self.media)
+        file_path = os.path.join(current_app.config['UPLOAD_TEMP_PATH'], self.media)
         print(f"Пытаемся удалить файл: {file_path}")
         if os.path.exists(file_path):
             os.remove(file_path)
