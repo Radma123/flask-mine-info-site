@@ -1,5 +1,8 @@
 //загрузка последней модели из localStorage
 document.addEventListener("DOMContentLoaded", function() {
+    //пролистывание вниз при полной загрузке страницы
+    document.getElementById('chat-place').scrollTop = document.getElementById('chat-place').scrollHeight;
+    //загрузка из local storage крайней модели
     if (!isAuthenticated) {
         let select = document.getElementById("gpt_value");
 
