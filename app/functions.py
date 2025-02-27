@@ -32,17 +32,17 @@ def compress_base64(base64_string, max_size=(1024, 1024)):
     return 'data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode()
 
 
-def gpt_send_message(prompt, model, photo=None):
+def gpt_send_message(prompt, model, photo_base64=None):
     messages = [{"role": "user", "content": prompt}]
     
-    if photo != None:
-        # print(photo)
+    if photo_base64 != None:
+        # print(photo_base64)
         messages = [
             {
                 "role": "user",
                 "content": [
                     {"type": "text", "text": prompt},
-                    {"type": "image_url", "image_url": {"url": photo}}
+                    {"type": "image_url", "image_url": {"url": photo_base64}}
                 ]
             }
         ]

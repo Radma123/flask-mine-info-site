@@ -106,7 +106,7 @@ def send():
         authenticated = current_user.is_authenticated
         user_id = current_user.id if authenticated else None
 
-        url = None
+        photo_base64 = None
         bot_url = None
         message = None
         chat_url = None
@@ -118,17 +118,13 @@ def send():
 
         if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']: #вопрос с фото или без
             print(2)
-            # photo_path = save_picture(photo, temp=True, img_type='img')
-            photo_base64 = compress_base64(photo.read())
-            # url = url_for('gpt.get_uploaded_temp', filename=photo_path, _external=True)
+            photo_base64 = compress_base64(photo.read()) #base64 -> compressed base64
 
         if generate_img_mode == 'true': #генерация фото
                 bot_url = generate_img(user_message, model) #base64
                 print(12)
-                print('-----------------')
-                print(bot_photo_path)
         else:
-            message = gpt_send_message(user_message, model, photo=photo_base64)
+            message = gpt_send_message(user_message, model, photo_base64=photo_base64)
 
         print(3)
         print(message)
@@ -136,6 +132,8 @@ def send():
         if authenticated:
             if bot_url:
                 bot_photo_path = save_picture(bot_url, temp=False, img_type='base64')
+            if photo_base64:
+                photo_path = save_picture(photo_base64, temp=False, img_type='base64')
             match database_mode:
                 case 'create_chat':
                     chat_url = create_chat(user_id=user_id, model=model, user_message=user_message, photo_path=photo_path, message=message, bot_photo_path=bot_photo_path)

@@ -74,7 +74,7 @@ class Messages(db.Model):
         if self.media is None:
             return
         
-        file_path = os.path.join(current_app.config['UPLOAD_TEMP_PATH'], self.media)
+        file_path = os.path.join(current_app.config['UPLOAD_PATH'], self.media)
         print(f"Пытаемся удалить файл: {file_path}")
         if os.path.exists(file_path):
             os.remove(file_path)

@@ -90,12 +90,13 @@ document.getElementById("sendButton").addEventListener("click", async function()
     }
 
     // Отображение сообщения пользователя______________________________________________________________________________________________________________
-    if (dataUploaded === 'false') { 
+    if (user_message) { 
         let userMessage = document.createElement("div");
         userMessage.classList.add("message", "user-message");
         userMessage.textContent = user_message;
         chatPlace.appendChild(userMessage);
-    } else {
+    }
+    if (dataUploaded === 'true') { 
         try {
             let reader = new FileReader();
             let photo_base64 = await new Promise((resolve, reject) => {
@@ -129,7 +130,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
         formData.append("database_mode", "guest");
     }else if (chat_id != "gpt"){
         formData.append("database_mode", "add_to_chat");
-    }else if (chatPlace.childElementCount == 1){
+    }else if (chatPlace.getElementsByClassName("bot-message").length == 0){
         formData.append("database_mode", "create_chat");
     }else{
         alert('Error of chosing your current status')

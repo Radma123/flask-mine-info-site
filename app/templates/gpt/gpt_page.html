@@ -24,7 +24,12 @@ GPT
     <div class="input-chat-container">
         <div id="chat-place" class="chat-place">
             {% for message in messages %}
-                <div class="message {{ message.sender }}-message">{{ message.message }}</div>
+                {% if message.message %}
+                    <div class="message {{ message.sender }}-message">{{ message.message }}</div>
+                {% endif %}
+                {% if message.media %}
+                    <img class="message {{ message.sender }}-message" src="{{ url_for('gpt.get_uploaded_private', filename=message.media) }}" alt="{{ message.sender }} img">
+                {% endif %}
             {% endfor %}
         </div>
         <div class="text-place">
