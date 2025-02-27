@@ -15,18 +15,21 @@ def get_all_gpts() -> list:
 
     return gpts
 
-#возвращает ЧИСТЫЙ base64 лбрезанный
+#возвращает ЧИСТЫЙ base64 обрезанный
 def compress_base64(base64_string, max_size=(1024, 1024)):
-    base64_string = base64_string.split(' ')[-1]
-    img_bytes = base64.b64decode(base64_string)
-
+    if not isinstance(base64_string, bytes):
+        base64_string = base64_string.split("base64,")[-1]
+        img_bytes = base64.b64decode(base64_string)
+    else:
+        img_bytes = base64_string
+        
     i = Image.open(BytesIO(img_bytes))
     i.thumbnail(max_size)
 
     buffer = BytesIO()
     i.save(buffer, format="PNG")
 
-    return base64.b64encode(buffer.getvalue()).decode()
+    return 'data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode()
 
 
 def gpt_send_message(prompt, model, photo=None):
@@ -146,7 +149,7 @@ def save_picture(picture, img_type, temp=True):
         case 'img':
             i = Image.open(picture)
         case 'base64':
-            base64_data = picture.split(' ')[-1] if ' ' in picture else picture
+            base64_data = picture.split("base64,")[-1]
             img_bytes = base64.b64decode(base64_data)
             i = Image.open(BytesIO(img_bytes))
         
