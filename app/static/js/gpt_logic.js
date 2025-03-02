@@ -41,14 +41,6 @@ document.getElementById('fileInput').addEventListener('change', async function (
         return;
     }
 
-    // let reader = new FileReader();
-    // reader.onload = function (e) {
-    //     localStorage.setItem('savedFile', e.target.result); // Сохраняем base64 строку
-    //     console.log("Файл сохранён в локальном хранилище!");
-    // };
-
-    // reader.readAsDataURL(fileInput); // Преобразуем файл в base64
-
     document.getElementById("fileInput").disabled = true;
     let icon = document.getElementById("upload-img");
     icon.classList.remove("bi-image"); 
@@ -59,10 +51,8 @@ document.getElementById('fileInput').addEventListener('change', async function (
 
 document.getElementById('enable-img-mode').addEventListener('change', function() {
     if (this.checked) {
-        console.log('Переключатель ВКЛЮЧЕН');
         document.getElementById('custom-file-label').hidden = true
     } else {
-        console.log('Переключатель ВЫКЛЮЧЕН');
         document.getElementById('custom-file-label').hidden = false
     }
 });

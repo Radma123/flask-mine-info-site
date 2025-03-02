@@ -1,0 +1,11 @@
+env/
+__pycache__/
+migrations/
+*Zone.Identifier
+.webassets-cache
+gen/
+.DS_Store
+har_and_cookies
+uploads
+generated_images
+app.log

@@ -10,7 +10,7 @@ class Config(object):
     PASSWORD = os.environ.get('POSTGRES_PASSWORD')
     
     # ДОБАВИТЬ ПОСЛЕ РАЗРАБОТКИ .ENV
-    HOST = '127.0.0.1'
+    HOST = os.environ.get('POSTGRES_HOST', default='127.0.0.1')
     PORT = os.environ.get('POSTGRES_PORT')
     DB = os.environ.get('POSTGRES_DB')
     SECRET_KEY = os.urandom(24)

@@ -62,32 +62,6 @@ def get_uploaded_private(filename):
         return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
     abort(403)
 
-# @gpt.route("/gpt/upload", methods=["POST"])
-# def upload():
-#     try:
-#         # Получаем файл из запроса
-#         uploaded_file = request.files.get("file")
-
-#         if not uploaded_file:
-#             return jsonify({
-#                 "status": "error",
-#                 "message": "Файл не был загружен"
-#             }), 400
-
-
-#         with open(current_app.config['SERVER_PATH']+uploaded_file.filename, "wb") as f:
-#             f.write(uploaded_file.read())
-
-#         return jsonify({
-#             "status": "success",
-#             "message": uploaded_file.filename
-#         }), 200
-
-#     except Exception as e:
-#         return jsonify({
-#             "status": "error",
-#             "message": str(e)
-#         }), 500
 
 @gpt.route("/send", methods=["POST"])
 def send():
@@ -113,21 +87,13 @@ def send():
         photo_path = None
         bot_photo_path = None
         #Данные________________________________________________________________________________________________
-        print(1)
-        print(request.form)
-
         if photo != None and photo.filename.rsplit('.',1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS_PHOTOS']: #вопрос с фото или без
-            print(2)
             photo_base64 = compress_base64(photo.read()) #base64 -> compressed base64
 
         if generate_img_mode == 'true': #генерация фото
                 bot_url = generate_img(user_message, model) #base64
-                print(12)
         else:
             message = gpt_send_message(user_message, model, photo_base64=photo_base64)
-
-        print(3)
-        print(message)
 
         if authenticated:
             if bot_url:
@@ -152,7 +118,9 @@ def send():
         
 
     except Exception as e:
+        current_app.logger.error(f"Ошибка обработки сообщения: {str(e)}", exc_info=True)
+
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": 'Server Error'
         }), 500

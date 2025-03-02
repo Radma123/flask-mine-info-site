@@ -8,12 +8,13 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
         {% block style %}{% endblock %}
         <title>{% block title %}{% endblock %}</title>
+        <meta name="description" content="{% block description %}{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}{% endblock %}">
     </head>
     <body>
         <header>{% include 'main/_header.html' %}</header>
         <main class="content">
             {% include 'main/_flash.html' %}
-            <!-- <h1 class="content-name">{{ self.title() }}</h1> -->
             {% block content %}{% endblock %}
         </main>
         <footer>{% include 'main/_footer.html' %}</footer>
