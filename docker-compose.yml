@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ~/pg/pg_data/mine-info-site:/var/lib/postgresql/data
+    env_file:
+      - .env
+    expose:
+      - 8080
+      
+  flask:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: flask
+    volumes:
+      - ~/uploads/images/mine-info-site:/app/app/static/uploads
+      - ~/logs/images/mine-info-site:/app/logs
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    expose:
+      - 8080
+
+  nginx:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./nginx/
+    container_name: nginx
+    env_file:
+      - .env
+    depends_on:
+      - flask
+    ports:
+      - "8080:80"
+  
