@@ -6,8 +6,8 @@ services:
       - ~/pg/pg_data/mine-info-site:/var/lib/postgresql/data
     env_file:
       - .env
-    expose:
-      - 8080
+    ports:
+      - "54321:5432"
       
   flask:
     build:
@@ -29,10 +29,12 @@ services:
       dockerfile: ./Dockerfile
       context: ./nginx/
     container_name: nginx
+    volumes:
+      - ~/certs/mine-info-site:/etc/nginx/ssl
     env_file:
       - .env
     depends_on:
       - flask
     ports:
-      - "8080:80"
+      - "443:443"
   
