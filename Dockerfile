@@ -4,7 +4,7 @@ WORKDIR /app
 
 ADD . /app
 
-RUN apt install gcc -y && apt-get update --fix-missing
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y gcc && apt-get clean
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "uwsgi", "app.ini" ]
+CMD ["sh", "-c", "flask db migrate && flask db upgrade && uwsgi app.ini"]
