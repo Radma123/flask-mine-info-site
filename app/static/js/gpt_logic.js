@@ -149,7 +149,7 @@ document.getElementById("sendButton").addEventListener("click", async function()
             }else{
                 let botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
-                botMessage.textContent = result.message;
+                botMessage.innerHTML = result.message;
                 chatPlace.appendChild(botMessage);
             }
 

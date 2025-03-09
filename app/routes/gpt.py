@@ -5,6 +5,7 @@ from ..extensions import client, db
 from ..models.user import User, Chats, Messages
 from sqlalchemy import desc
 from werkzeug.utils import secure_filename
+import markdown
 
 gpt = Blueprint('gpt', __name__)
 
@@ -111,7 +112,7 @@ def send():
 
         return jsonify({
             "status": "success",
-            "message": message,
+            "message": markdown.markdown(message, extensions=['fenced_code']),
             "bot_url": bot_url,
             "redirection": chat_url
         }), 200
