@@ -11,7 +11,7 @@ jobs:
       - name: export db passwd
         run: export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
       - name: down old containers
-        run: echo ${{ secrets.USERPWD }} | sudo docker compose down
+        run: echo ${{ secrets.USERPWD }} | sudo docker compose down || true
   deploy:
     runs-on: self-hosted
     needs: prepare-environment
