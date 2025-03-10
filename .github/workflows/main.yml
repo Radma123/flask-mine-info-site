@@ -8,8 +8,6 @@ jobs:
   prepare-environment:
     runs-on: self-hosted
     steps:
-      - name: export db passwd
-        run: export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
       - name: down old containers
         run: echo ${{ secrets.USERPWD }} | sudo docker compose down || true
   deploy:
@@ -19,4 +17,4 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       - name: Start compose
-        run: echo ${{ secrets.USERPWD }} | sudo -E docker compose up --build -d
+        run: echo ${{ secrets.USERPWD }} | sudo -E POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} docker compose up --build -d
