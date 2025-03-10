@@ -8,19 +8,15 @@ jobs:
   prepare-environment:
     runs-on: self-hosted
     steps:
-    - name: a
-      run: echo ${{ secrets.USERPWD }} | sudo -S whoami
-      # - name: down old containers
-      #   run: docker-compose down
-      # - name: remove old web image
-      #   run: docker rmi -f rusmarket-backend_web
-  # deploy:
-  #   runs-on: self-hosted
-  #   needs: prepare-environment
-  #   steps:
-  #     - name: checkout repo
-  #       uses: actions/checkout@v3
-  #     - name: Start PostgreSQL container
-  #       run: docker-compose up -d db
-  #     - name: Start web server container
-  #       run: docker-compose up -d web
+      - name: export db passwd
+        run: echo ${{ secrets.USERPWD }} | sudo export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+      - name: down old containers
+        run: sudo docker-compose down
+  deploy:
+    runs-on: self-hosted
+    needs: prepare-environment
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: Start compose
+        run: echo ${{ secrets.USERPWD }} | sudo -E docker compose up --build -d

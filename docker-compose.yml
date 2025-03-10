@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: postgres
     volumes:
-      - ~/pg/pg_data/mine-info-site:/var/lib/postgresql/data
+      - /mine-info-site/pg/pg_data:/var/lib/postgresql/data
     env_file:
       - .env
     ports:
@@ -15,9 +15,9 @@ services:
       context: .
     container_name: flask
     volumes:
-      - ~/uploads/images/mine-info-site:/app/app/static/uploads
-      - ~/logs/images/mine-info-site:/app/logs
-      - ~/pg/migrations:/app/migrations
+      - /mine-info-site/uploads:/app/app/static/uploads
+      - /mine-info-site/logs:/app/logs
+      - /mine-info-site/pg/migrations:/app/migrations
     env_file:
       - .env
     depends_on:
@@ -31,7 +31,7 @@ services:
       context: ./nginx/
     container_name: nginx
     volumes:
-      - ~/certs/mine-info-site:/etc/nginx/ssl
+      - /mine-info-site/certs:/etc/nginx/ssl
     env_file:
       - .env
     depends_on:
