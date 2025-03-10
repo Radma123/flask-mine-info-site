@@ -9,7 +9,7 @@ jobs:
     runs-on: self-hosted
     steps:
     - name: a
-      run: echo ${{ secrets.USERPWD }} | sudo -S pwd
+      run: echo ${{ secrets.USERPWD }} | sudo -S whoami
       # - name: down old containers
       #   run: docker-compose down
       # - name: remove old web image
