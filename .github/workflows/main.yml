@@ -1,0 +1,26 @@
+name: Deploy by runner
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  prepare-environment:
+    runs-on: self-hosted
+    steps:
+    - name: a
+      run: pwd
+      # - name: down old containers
+      #   run: docker-compose down
+      # - name: remove old web image
+      #   run: docker rmi -f rusmarket-backend_web
+  # deploy:
+  #   runs-on: self-hosted
+  #   needs: prepare-environment
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v3
+  #     - name: Start PostgreSQL container
+  #       run: docker-compose up -d db
+  #     - name: Start web server container
+  #       run: docker-compose up -d web
