@@ -9,7 +9,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: down old containers
-        run: echo ${{ secrets.USERPWD }} | sudo docker compose down && echo "Containers stopped" || true
+        run: echo ${{ secrets.USERPWD }} | sudo -S docker compose down && echo "Containers stopped" || true
   deploy:
     runs-on: self-hosted
     needs: prepare-environment
