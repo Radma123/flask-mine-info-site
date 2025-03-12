@@ -33,7 +33,7 @@ Blessed, Blessed website, GPT, ChatGPT, Gemini, Ai, Temp Storage, Project
         <div id="chat-place" class="chat-place">
             {% for message in messages %}
                 {% if message.message %}
-                    <div class="message {{ message.sender }}-message">{{ message.message }}</div>
+                    <div class="message {{ message.sender }}-message">{{ message.message | safe}}</div>
                 {% endif %}
                 {% if message.media %}
                     <img class="message {{ message.sender }}-message" src="{{ url_for('gpt.get_uploaded_private', filename=message.media) }}" alt="{{ message.sender }} img">
