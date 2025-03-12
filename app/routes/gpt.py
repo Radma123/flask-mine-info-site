@@ -27,7 +27,7 @@ def chat(chat_id):
         gpts = get_all_gpts()
         choice_elements = Chats.query.filter_by(user_id = current_user.id).order_by(desc(Chats.date)).all()
         model = Chats.query.filter_by(id = str(chat_id)).first().model
-        messages = Messages.query.filter_by(chat_id = str(chat_id)).all()
+        messages = [markdown.markdown(message, extensions=['fenced_code']) for message in Messages.query.filter_by(chat_id = str(chat_id)).all()]
 
 
         return render_template('gpt/gpt_page.html',gpts=gpts, choice_elements = choice_elements, model=model, messages=messages)
