@@ -28,4 +28,4 @@ docker rm $(docker ps -a -q)
 docker rmi $(docker images -qa)
 
 #удаление репы из vscode
-rm -rf .git
+rm -rf .git 
